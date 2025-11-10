@@ -44,7 +44,7 @@
     --sidebar-accent: 48 37% 68%;
     --sidebar-accent-foreground: 240 8% 19%;
     --sidebar-border: 38 25% 85%;
-    --sidebar-ring: 262 42% 40%
+    --sidebar-ring: 262 42% 40%;
 }
 
 
@@ -107,6 +107,14 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
 }
 
 body {
