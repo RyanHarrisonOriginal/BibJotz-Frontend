@@ -2,9 +2,10 @@
 import type { Metadata } from "next";
 import { Inter, Lora } from "next/font/google";
 import "./globals.css";
-import { AppSideBar } from "@/components/layout/AppSideBar";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { ClerkProvider } from "@clerk/nextjs";
 import { SidebarProvider } from "@/components/ui/SideBar/sidebarProvider";
+import { ConditionalLayout } from "@/components/layout/ConditionalLayout";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
@@ -26,20 +27,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SidebarProvider>
-    <html lang="en" className={`${inter.variable} ${lora.variable}`}>
-      <body>
-        <div className="min-h-screen flex w-full">
-        <AppSideBar />
-        <div className="flex-1 flex flex-col">
-          <AppHeader />
-          <main className="flex-1">
-            {children}
-          </main>
-        </div>
-        </div>
-      </body>
-    </html>
-    </SidebarProvider>
+    <ClerkProvider>
+      <QueryProvider>
+        <SidebarProvider>
+          <html lang="en" className={`${inter.variable} ${lora.variable}`}>
+            <body>
+              <ConditionalLayout>
+                {children}
+              </ConditionalLayout>
+            </body>
+          </html>
+        </SidebarProvider>
+      </QueryProvider>
+    </ClerkProvider>
   );
 }
