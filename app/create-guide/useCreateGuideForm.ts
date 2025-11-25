@@ -14,9 +14,7 @@ export function useCreateGuideForm() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [isPublic, setIsPublic] = useState(true);
-  const [biblicalReferences, setBiblicalReferences] = useState<BiblicalReference[]>([
-    { book: '', chapter: 1, startVerse: 1, endVerse: 1 },
-  ]);
+  const [biblicalReferences, setBiblicalReferences] = useState<BiblicalReference[]>([]);
   const [guideSections, setGuideSections] = useState<GuideSection[]>([
     {
       title: '',
@@ -43,7 +41,7 @@ export function useCreateGuideForm() {
 
   const removeReference = useCallback((index: number) => {
     setBiblicalReferences((prev) => {
-      if (prev.length > 1) {
+      if (prev.length > 0) {
         return prev.filter((_, i) => i !== index);
       }
       return prev;

@@ -1,19 +1,21 @@
 import * as React from 'react';
-import { useBooks } from '@/features/book-autocomplete/hooks/useBibleApi';
-import { BibleBook } from '@/features/book-autocomplete/types';
+import { useBookChapterInfo, useBooks } from '@/features/bible/components/book-autocomplete/hooks/useBibleApi';
+import { BookInfo } from '@/features/bible/types';
 
 export type UseBookAutocompleteProps = {
   value: string;
   onChange: (value: string) => void;
   onBookSelect?: (book: { code: string; name: string }) => void;
+  translation?: string;
 };
 
 export function useBookAutocomplete({
   value,
   onChange,
   onBookSelect,
+  translation,
 }: UseBookAutocompleteProps) {
-  const { data: books = [], isLoading: loading, error } = useBooks();
+  const { data: books = [], isLoading: loading, error } = useBooks(true, translation || '');
   const [isOpen, setIsOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
@@ -40,7 +42,7 @@ export function useBookAutocomplete({
 
   // Handle book selection
   const handleSelectBook = React.useCallback(
-    (book: BibleBook) => {
+    (book: BookInfo) => {
       onChange(book.name);
       onBookSelect?.({ code: book.code, name: book.name });
       reset();

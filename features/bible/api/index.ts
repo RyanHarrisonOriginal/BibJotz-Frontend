@@ -1,15 +1,25 @@
 // API-related exports for book-autocomplete feature
 // This can be used for feature-specific API calls or types
 
-import { BibleBook, Chapter, Verse, VerseText } from '@/features/book-autocomplete/types';
+import { BookInfo, BookChapterInfo, Verse, VerseText, BibleTranslation } from '@/features/bible/types';
 
-const BASE_URL = 'http://localhost:3000/books';
 
+export class TranslationApiService {
+  private static readonly BASE_URL = 'http://localhost:3000/translations';
+  static async fetchBibleTranslations(): Promise<BibleTranslation[]> {
+    const response = await fetch(`${this.BASE_URL}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch bible translations');
+    }
+    return response.json();
+  }
+}
 
 export class BibleApiService {
-  static async fetchBooks(): Promise<BibleBook[]> {
+  private static readonly BASE_URL = 'http://localhost:3000/books';
+  static async fetchBooks(translation: string = 'BSB'): Promise<BookInfo[]> {
     try {
-      const response = await fetch(BASE_URL, {
+      const response = await fetch(`${this.BASE_URL}?translation=${translation}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -27,21 +37,28 @@ export class BibleApiService {
     }
   }
 
-  
-  static async fetchChapters(bookName: string): Promise<Chapter[]> {
-    const response = await fetch(`${BASE_URL}/${bookName}/chapters`);
+  static async fetchBookChapterInfo(bookName: string, chapterNumber: number): Promise<BookChapterInfo> {
+    const response = await fetch(`${this.BASE_URL}/${bookName}/chapters/${chapterNumber}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch chapters for ${bookName}`);
     }
     return response.json();
   }
-  
+
+  static async fetchBookInfo(bookName: string): Promise<BookInfo> {
+    const response = await fetch(`${this.BASE_URL}/${bookName}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch book info for ${bookName}`);
+    }
+    return response.json();
+  }
+
   static async fetchVerses(
     bookName: string,
     chapterNumber: number
   ): Promise<Verse[]> {
     const response = await fetch(
-      `${BASE_URL}/${bookName}/chapters/${chapterNumber}/verses`
+      `${this.BASE_URL}/${bookName}/chapters/${chapterNumber}/verses`
     );
     if (!response.ok) {
       throw new Error(
@@ -50,7 +67,7 @@ export class BibleApiService {
     }
     return response.json();
   }
-  
+
   static async fetchVerseText(
     bookName: string,
     chapterNumber: number,
@@ -64,7 +81,7 @@ export class BibleApiService {
       translation: translation,
     });
     const response = await fetch(
-      `${BASE_URL}/${bookName}/chapters/${chapterNumber}/verses/text?${params.toString()}`
+      `${this.BASE_URL}/${bookName}/chapters/${chapterNumber}/verses/text?${params.toString()}`
     );
     if (!response.ok) {
       throw new Error(
@@ -73,4 +90,6 @@ export class BibleApiService {
     }
     return response.json();
   }
+
 }
+

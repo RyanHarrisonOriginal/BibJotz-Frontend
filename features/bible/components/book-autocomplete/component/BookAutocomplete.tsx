@@ -11,6 +11,7 @@ export type BookAutocompleteProps = Omit<React.ComponentProps<'button'>, 'onChan
   onChange: (value: string) => void;
   onBookSelect?: (book: { code: string; name: string }) => void;
   placeholder?: string;
+  translation?: string;
 };
 
 export function BookAutocomplete({
@@ -19,6 +20,7 @@ export function BookAutocomplete({
   onBookSelect,
   className,
   placeholder = 'Select book',
+  translation,
   ...props
 }: BookAutocompleteProps) {
   const {
@@ -37,7 +39,7 @@ export function BookAutocomplete({
     handleButtonKeyDown,
     handleDropdownKeyDown,
     handleSearchKeyDown,
-  } = useBookAutocomplete({ value, onChange, onBookSelect });
+  } = useBookAutocomplete({ value, onChange, onBookSelect, translation });
 
   return (
     <div className="relative">
