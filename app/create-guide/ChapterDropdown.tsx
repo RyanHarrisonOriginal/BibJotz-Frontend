@@ -1,5 +1,5 @@
 import { NumberDropdown } from './NumberDropdown';
-import { useBookInfo } from '@/features/bible/components/book-autocomplete/hooks/useBibleApi';
+import { useBookInfo } from '@/features/bible/hooks/useBibleApi';
 import { BookInfo } from '@/features/bible/types';
 
 type ChapterDropdownProps = {   

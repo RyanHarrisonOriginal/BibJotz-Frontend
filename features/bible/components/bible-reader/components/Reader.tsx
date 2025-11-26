@@ -1,9 +1,12 @@
+'use client';
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialogue/dialogue";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useBibleReader } from "@/features/bible/components/bible-reader/hooks/useBibleReader";
 import { BibleReaderPannel } from "@/features/bible/components/bible-reader/components/Pannel";
 import { BibleReaderControls } from "@/features/bible/components/bible-reader/components/Controls";
+import { useEffect, useState } from "react";
 
 interface BibleReaderModalProps {
   open: boolean;
@@ -13,7 +16,14 @@ interface BibleReaderModalProps {
 
 
 
+
 export function BibleReaderModal({ open, onOpenChange, onSelectReference }: BibleReaderModalProps) {
+  // Only mount on client to avoid hydration issues
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const {
     panels,
@@ -21,6 +31,7 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
     rangeStart,
     translations,
     panelBooks,
+    panelVersesText,
     fontSize,
     addPanel,
     removePanel,
@@ -33,10 +44,13 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
     decreaseFontSize
   } = useBibleReader();
 
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-7xl h-[85vh] p-0 bg-gradient-to-br from-background via-background to-muted/30">
+      <DialogContent className="w-[80vw] max-w-[80vw] h-[85vh] p-0 bg-gradient-to-br from-background via-background to-muted/30">
         <DialogHeader className="p-6 pb-4 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-transparent">
           <DialogTitle className="text-2xl font-serif text-primary">Bible Reader</DialogTitle>
           <p className="text-sm text-muted-foreground mt-1">Select verses to add to your guide</p>
@@ -57,7 +71,7 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
           {/* Panels */}
           <div className={
               `grid ${panels.length === 1 ? 
-              'grid-cols-1 max-w-3xl mx-auto' : panels.length === 2 ? 
+              'grid-cols-1' : panels.length === 2 ? 
               'grid-cols-2' : 'grid-cols-3'} gap-6 ${panels.length === 1 ? 
               'p-4' : 'p-6'} flex-1 min-h-0 overflow-hidden`}
               style={{ gridAutoRows: 'minmax(0, 1fr)' }}>
@@ -66,6 +80,7 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
               key={panel.id} 
               panel={panel} 
               index={index}
+              versesText={panelVersesText[index] || undefined}
               updatePanel={updatePanel} 
               removePanel={removePanel} 
               handleVerseClick={handleVerseClick} 

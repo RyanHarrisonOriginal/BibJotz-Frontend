@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/Card/card';
 import { Trash2, BookOpen } from 'lucide-react';
 import { NumberDropdown } from './NumberDropdown';
 import { VerseDropdown } from './VerseDropdown';
-import { useBooks } from '@/features/bible/components/book-autocomplete/hooks/useBibleApi';
+import { useBooks } from '@/features/bible/hooks/useBibleApi';
 import { ChapterDropdown } from './ChapterDropdown';
 import * as React from 'react';
 import { cn } from '@/lib/utils';

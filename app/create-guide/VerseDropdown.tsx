@@ -2,7 +2,7 @@
 
 import { BookChapterInfo } from '@/features/bible/types';
 import { NumberDropdown } from './NumberDropdown';
-import { useBookChapterInfo, useVerses } from '@/features/bible/components/book-autocomplete/hooks/useBibleApi';
+import { useBookChapterInfo, useVerses } from '@/features/bible/hooks/useBibleApi';
 
 type VerseDropdownProps = {
   book: string;

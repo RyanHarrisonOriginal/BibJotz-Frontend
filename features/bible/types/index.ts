@@ -13,13 +13,21 @@ export type BookInfo = {
   };
   
   export type Verse = {
-    number: number;
-    [key: string]: unknown;
+    verse: number;
+    texts: VerseTextTranslation[];
+  };
+
+  export type VerseTextTranslation = {
+    translation: string;
+    text: string;
   };
   
   export type VerseText = {
-    text: string;
-    [key: string]: unknown;
+    book: string;
+    bookshortName: string;
+    chapter: number;
+    translations: BibleTranslation[];
+    verses: Verse[];
   };
   
   export interface BibleTranslation {

@@ -37,15 +37,15 @@ export function useVerses(bookName: string, chapterNumber: number) {
 export function useVerseText(
   bookName: string,
   chapterNumber: number,
-  start: number,
-  end: number,
-  translation: string = ''
+  start: number|undefined = undefined,
+  end: number|undefined = undefined,
+  translation: string|undefined = undefined
 ) {
   return useQuery({
     queryKey: ['verseText', bookName, chapterNumber, start, end, translation],
     queryFn: () =>
-      BibleApiService.fetchVerseText(bookName, chapterNumber, start, end, translation),
-    enabled: !!bookName && !!chapterNumber && !!start && !!end,
+      BibleApiService.fetchVerseText(bookName, chapterNumber, translation, start, end),
+    enabled: !!bookName && !!chapterNumber,
   });
 }
 

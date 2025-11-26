@@ -2,7 +2,7 @@ import { ScrollArea } from "@/components/ui/ScrollArea/scroll-area";
 import { BOOKS, mockVerses } from "./test-constants";
 import { VersionPanel } from "@/features/bible/components/bible-reader/types";
 import { TranslationSelect, BookSelect, ChapterSelect, DeletePanelButton } from "./PanelSelects";
-import { BibleTranslation, BookInfo } from "@/features/bible/types";
+import { BibleTranslation, BookInfo, Verse, VerseText } from "@/features/bible/types";
 import { useMemo, useCallback, memo } from "react";
 import { BookAutocomplete } from "../../book-autocomplete/component/BookAutocomplete";
 
@@ -17,19 +17,21 @@ interface BibleReaderPannelProps {
     translations: BibleTranslation[];
     fontSize: number;
     books: BookInfo[];
+    versesText: VerseText | undefined;
 }
 
 interface VerseItemProps {
-    verse: { number: number; text: string };
+    number: number;
+    text: string;
     isSelected: boolean;
     onClick: (verseNum: number, isShiftKey: boolean) => void;
     fontSize: number;
 }
 
-const VerseItem = memo(({ verse, isSelected, onClick, fontSize }: VerseItemProps) => {
+const VerseItem = memo(({ number, text, isSelected, onClick, fontSize }: VerseItemProps) => {
     const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        onClick(verse.number, e.shiftKey);
-    }, [verse.number, onClick]);
+        onClick(number, e.shiftKey);
+    }, [number, onClick]);
 
     const className = useMemo(() =>
         `group cursor-pointer p-2 rounded transition-colors ${isSelected
@@ -40,30 +42,72 @@ const VerseItem = memo(({ verse, isSelected, onClick, fontSize }: VerseItemProps
     );
 
     return (
-                <div
-                    key={verse.number}
-                    onClick={handleClick}
-                    className={`group cursor-pointer p-3 my-3 rounded-lg transition-all duration-200 ${isSelected
-                            ? 'bg-primary/15 border-2 border-primary shadow-sm scale-[1.00]'
-                            : 'hover:bg-muted/50 border-2 border-transparent hover:border-border/30'
-                        }`}
-                >
-                    <div className="flex items-start gap-3">
-                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 text-primary font-bold text-xs flex-shrink-0 mt-0.5">
-                            {verse.number}
-                        </span>
-                        <span className="font-serif leading-relaxed text-foreground" style={{ fontSize: `${fontSize}px` }}>
-                            {verse.text}
-                        </span>
-                    </div>
-                </div>
-       
+        <div
+            key={number}
+            onClick={handleClick}
+            className={`group cursor-pointer p-3 my-3 rounded-lg transition-all duration-200 ${isSelected
+                ? 'bg-primary/15 border-2 border-primary shadow-sm scale-[1.00]'
+                : 'hover:bg-muted/50 border-2 border-transparent hover:border-border/30'
+                }`}
+        >
+            <div className="flex items-start gap-3">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 text-primary font-bold text-xs flex-shrink-0 mt-0.5">
+                    {number}
+                </span>
+                <span className="font-serif leading-relaxed text-foreground" style={{ fontSize: `${fontSize}px` }}>
+                    {text}
+                </span>
+            </div>
+        </div>
+
     );
 });
 VerseItem.displayName = "VerseItem";
 
-export const BibleReaderPannel = memo(({ 
-    panel, index, updatePanel, removePanel, handleVerseClick, translations, selectedVerses, includeRemoveButton = true, fontSize, books }: BibleReaderPannelProps) => {
+const VerseItemSkeleton = memo(({ fontSize }: { fontSize: number }) => {
+    // Calculate line height based on fontSize to match the actual verse text
+    const lineHeight = fontSize * 1.5; // leading-relaxed is approximately 1.5
+
+    return (
+        <div className="p-3 my-3 rounded-lg border-2 border-transparent">
+            <div className="flex items-start gap-3">
+                <div className="w-7 h-7 rounded-full bg-muted animate-pulse flex-shrink-0 mt-0.5" />
+                <div className="flex-1 space-y-2">
+                    <div 
+                        className="w-full bg-muted rounded animate-pulse font-serif" 
+                        style={{ 
+                            height: `${lineHeight}px`,
+                            width: '650px',
+                        }} 
+                    />
+                    <div 
+                        className="w-full bg-muted rounded animate-pulse font-serif" 
+                        style={{ 
+                            height: `${lineHeight}px`,
+                            width: '650px',
+                        }} 
+                    />
+                </div>
+            </div>
+        </div>
+    );
+});
+VerseItemSkeleton.displayName = "VerseItemSkeleton";
+
+export const BibleReaderPannel = memo(({
+    panel,
+    index,
+    updatePanel,
+    removePanel,
+    handleVerseClick,
+    translations,
+    selectedVerses,
+    includeRemoveButton = true,
+    fontSize,
+    books,
+    versesText }: BibleReaderPannelProps) => {
+
+
     const handleVersionUpdate = useCallback((value: string) => {
         updatePanel(panel.id, "version", value);
     }, [panel.id, updatePanel]);
@@ -79,6 +123,10 @@ export const BibleReaderPannel = memo(({
     const handleRemove = useCallback(() => {
         removePanel(panel.id);
     }, [panel.id, removePanel]);
+
+    const getMaxChapters = useCallback((panelBook: string) => {
+        return books.find((book: BookInfo) => book.code === panelBook)?.numberOfChapters || 0;
+    }, [books]);
 
     return (
         <div
@@ -108,7 +156,7 @@ export const BibleReaderPannel = memo(({
                     />
                     <ChapterSelect
                         chapter={panel.chapter}
-                        chapters={Array.from({ length: 50 }, (_, i) => i + 1)}
+                        maxChapters={getMaxChapters(panel.book)}
                         updatePanel={handleChapterUpdate}
                     />
                 </div>
@@ -118,15 +166,23 @@ export const BibleReaderPannel = memo(({
             <div className="flex-1 min-h-0 overflow-hidden">
                 <ScrollArea className="h-full p-4">
                     <div className="space-y-3">
-                    {mockVerses.map((verse: { number: number; text: string }) => (
-                        <VerseItem
-                            key={verse.number}
-                            verse={verse}
-                            isSelected={selectedVerses.has(verse.number)}
-                            onClick={handleVerseClick}
-                            fontSize={fontSize}
-                        />
-                    ))}
+                        {versesText?.verses ? (
+                            versesText.verses.map((v: Verse) => (
+                                <VerseItem
+                                    key={v.verse}
+                                    number={v.verse}
+                                    text={v.texts[0]?.text || ''}
+                                    isSelected={selectedVerses.has(v.verse)}
+                                    onClick={handleVerseClick}
+                                    fontSize={fontSize}
+                                />
+                            ))
+                        ) : (
+                            // Show skeleton loaders - typical chapter has 20-30 verses, showing 15 for good coverage
+                            Array.from({ length: 15 }).map((_, index) => (
+                                <VerseItemSkeleton key={index} fontSize={fontSize} />
+                            ))
+                        )}
                     </div>
                 </ScrollArea>
             </div>

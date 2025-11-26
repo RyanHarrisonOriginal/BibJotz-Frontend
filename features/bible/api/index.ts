@@ -55,7 +55,7 @@ export class BibleApiService {
 
   static async fetchVerses(
     bookName: string,
-    chapterNumber: number
+    chapterNumber: number,
   ): Promise<Verse[]> {
     const response = await fetch(
       `${this.BASE_URL}/${bookName}/chapters/${chapterNumber}/verses`
@@ -71,17 +71,21 @@ export class BibleApiService {
   static async fetchVerseText(
     bookName: string,
     chapterNumber: number,
-    start: number,
-    end: number,
-    translation: string = ''
+    translation: string|undefined = undefined,
+    start: number | undefined = undefined,
+    end: number | undefined = undefined,
   ): Promise<VerseText> {
     const params = new URLSearchParams({
-      start: start.toString(),
-      end: end.toString(),
-      translation: translation,
+      translation: translation || '',
     });
+    if (start) {
+      params.set('start', start.toString());
+    }
+    if (end) {
+      params.set('end', end.toString());
+    }
     const response = await fetch(
-      `${this.BASE_URL}/${bookName}/chapters/${chapterNumber}/verses/text?${params.toString()}`
+      `${this.BASE_URL}/${bookName}/chapters/${chapterNumber}/verses?${params.toString()}`
     );
     if (!response.ok) {
       throw new Error(

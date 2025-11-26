@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useBookChapterInfo, useBooks } from '@/features/bible/components/book-autocomplete/hooks/useBibleApi';
+import { useBookChapterInfo, useBooks } from '@/features/bible/hooks/useBibleApi';
 import { BookInfo } from '@/features/bible/types';
 
 export type UseBookAutocompleteProps = {

@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { BOOKS } from "./test-constants";
 import { BibleTranslation, BookInfo } from "@/features/bible/types";
 import { useCallback, memo } from "react";
-import { useBooks } from "@/features/bible/components/book-autocomplete/hooks/useBibleApi";
+import { useBooks } from "@/features/bible/hooks/useBibleApi";
 
 interface TranslationSelectProps {
     version: string;
@@ -21,7 +21,7 @@ interface BookSelectProps {
 
 interface ChapterSelectProps {
     chapter: string;
-    chapters: number[];
+    maxChapters: number;
     updatePanel: (value: string) => void;
 }
 
@@ -75,15 +75,16 @@ export const BookSelect = memo(({ book, updatePanel, books }: BookSelectProps) =
 });
 BookSelect.displayName = "BookSelect";
 
-const CHAPTER_NUMBERS = Array.from({ length: 50 }, (_, i) => i + 1);
 
-export const ChapterSelect = memo(({ chapter, chapters, updatePanel }: ChapterSelectProps) => {
+export const ChapterSelect = memo(({ chapter, maxChapters, updatePanel }: ChapterSelectProps) => {
+    const CHAPTER_NUMBERS = Array.from({ length: maxChapters }, (_, i) => i + 1);
     return (
         <Select
             value={chapter}
             onValueChange={updatePanel}
         >
-            <SelectTrigger className="h-9 w-24 border-border/50 hover:border-primary/30 transition-colors">                <SelectValue />
+            <SelectTrigger className="h-9 w-24 border-border/50 hover:border-primary/30 transition-colors">
+                <SelectValue />
             </SelectTrigger>
             <SelectContent>
                 <ScrollArea className="h-[200px]">

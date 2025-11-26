@@ -104,12 +104,13 @@ export function AddGuideBiblicalReference({
 
   return (
     <div className="space-y-4">
-
-      <BibleReaderModal
-        open={bibleReaderOpen}
-        onOpenChange={setBibleReaderOpen}
-        onSelectReference={handleSelectReference}
-      />
+      {bibleReaderOpen && (
+        <BibleReaderModal
+          open={bibleReaderOpen}
+          onOpenChange={setBibleReaderOpen}
+          onSelectReference={handleSelectReference}
+        />
+      )}
       <GuideReferenceHeader openBibleReader={() => setBibleReaderOpen(true)} />
 
 
