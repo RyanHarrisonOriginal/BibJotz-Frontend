@@ -1,23 +1,23 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, Ref } from "react";
 import { VersionPanel } from "@/features/bible/components/bible-reader/types";
 import { useBibleTranslations, useBooks, useVerses, useVerseText } from "@/features/bible/hooks/useBibleApi";
-import { BibleTranslation, BookInfo } from "@/features/bible/types";
+import { BibleTranslation, BookInfo, SelectedVerse } from "@/features/bible/types";
 
-  
-export function useBibleReader() {  
 
-  const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
-  const [rangeStart, setRangeStart] = useState<number | null>(null);
-  const [fontSize, setFontSize] = useState<number>(14); // Default font size in pixels
+export function useBibleReader() {
+
+  const [selectedVerses, setSelectedVerses] = useState<Set<SelectedVerse>>(new Set());
+  const [rangeStart, setRangeStart] = useState<SelectedVerse | null>(null);
+  const [fontSize, setFontSize] = useState<number>(14); // Default font size in pixels  
   const { data: bibleTranslations } = useBibleTranslations();
   const [translations, setTranslations] = useState<BibleTranslation[]>(bibleTranslations || []);
   // Initialize with stable default to avoid hydration mismatch
   const [panels, setPanels] = useState<VersionPanel[]>([
-    { 
-      id: "1", 
-      version: "BSB", 
-      book: "GEN", 
-      chapter: "1" 
+    {
+      id: "1",
+      version: "BSB",
+      book: "GEN",
+      chapter: "1"
     }
   ]);
 
@@ -82,8 +82,8 @@ export function useBibleReader() {
       // Update first panel version when translations load to avoid hydration mismatch
       setPanels(prevPanels => {
         if (prevPanels.length > 0 && prevPanels[0].version === "BSB" && bibleTranslations[0]?.code) {
-          return prevPanels.map((panel, index) => 
-            index === 0 
+          return prevPanels.map((panel, index) =>
+            index === 0
               ? { ...panel, version: bibleTranslations[0].code }
               : panel
           );
@@ -98,13 +98,13 @@ export function useBibleReader() {
   const addPanel = useCallback(() => {
     setPanels(prevPanels => {
       if (prevPanels.length < 3) {
-        return [...prevPanels, { 
-          id: Date.now().toString(), 
+        return [...prevPanels, {
+          id: Date.now().toString(),
           version: bibleTranslations?.find(
             translation => !prevPanels.map(panel => panel.version).
-            includes(translation.code))?.code || "BSB", 
-          book: prevPanels[0].book, 
-          chapter: prevPanels[0].chapter 
+              includes(translation.code))?.code || "BSB",
+          book: prevPanels[0].book,
+          chapter: prevPanels[0].chapter
         }];
       }
       return prevPanels;
@@ -124,26 +124,26 @@ export function useBibleReader() {
     setPanels(prevPanels => prevPanels.map(p => p.id === id ? { ...p, [field]: value } : p));
   }, []);
 
-  const handleVerseClick = useCallback((verseNum: number, isShiftKey: boolean) => {
+  const handleVerseClick = useCallback((verse: SelectedVerse, isShiftKey: boolean) => {
     setSelectedVerses(prevSelected => {
       const newSelected = new Set(prevSelected);
-      
+
       if (isShiftKey && rangeStart !== null) {
         // Range selection
-        const start = Math.min(rangeStart, verseNum);
-        const end = Math.max(rangeStart, verseNum);
+        const start = Math.min(rangeStart.verse, verse.verse);
+        const end = Math.max(rangeStart.verse, verse.verse);
         for (let i = start; i <= end; i++) {
-          newSelected.add(i);
+          newSelected.add({ book: verse.book, chapter: verse.chapter, verse: i });
         }
         setRangeStart(null);
       } else {
         // Single selection or start of range
-        if (newSelected.has(verseNum)) {
-          newSelected.delete(verseNum);
+        if (newSelected.has(verse)) {
+          newSelected.delete(verse);
           setRangeStart(null);
         } else {
-          newSelected.add(verseNum);
-          setRangeStart(verseNum);
+          newSelected.add(verse);
+          setRangeStart(verse);
         }
       }
       return newSelected;
@@ -155,46 +155,69 @@ export function useBibleReader() {
     setRangeStart(null);
   }, []);
 
-  const getSelectedReference = useCallback(() => {
-    if (selectedVerses.size === 0) return "";
-    const verses = Array.from(selectedVerses).sort((a, b) => a - b);
-    const book = panels[0].book;
-    const chapter = panels[0].chapter;
-    
-    if (verses.length === 1) {
-      return `${book} ${chapter}:${verses[0]}`;
+  type SelectedVerseGrouped = {
+    book: string;
+    chapter: number;
+    verses: number[];
+  }
+
+  const groupByBookChapter = useCallback((refs: SelectedVerse[]): SelectedVerseGrouped[] => {
+    const map = new Map<string, Set<number>>();
+
+    for (const r of refs) {
+      const key = `${r.book}:${r.chapter}`;
+      if (!map.has(key)) map.set(key, new Set());
+      map.get(key)!.add(r.verse);
     }
-    
+
+    // convert to a nicer structure
+    return Array.from(map.entries()).map(([key, verses]) => {
+      const [book, chapter] = key.split(":");
+      return {
+        book,
+        chapter: Number(chapter),
+        verses: Array.from(verses).sort((a, b) => a - b),
+      };
+    });
+  }, []);
+
+  const handleParseSelectedVerses = useCallback((selection: SelectedVerseGrouped) => {
     // Find consecutive ranges
     const ranges: string[] = [];
-    let start = verses[0];
-    let end = verses[0];
-    
-    for (let i = 1; i < verses.length; i++) {
-      if (verses[i] === end + 1) {
-        end = verses[i];
+    let start = selection.verses[0];
+    let end = selection.verses[0];
+
+    for (let i = 1; i < selection.verses.length; i++) {
+      if (selection.verses[i] === end + 1) {
+        end = selection.verses[i];
       } else {
         ranges.push(start === end ? `${start}` : `${start}-${end}`);
-        start = verses[i];
-        end = verses[i];
+        start = selection.verses[i];
+        end = selection.verses[i];
       }
     }
     ranges.push(start === end ? `${start}` : `${start}-${end}`);
-    
-    return `${book} ${chapter}:${ranges.join(", ")}`;
-  }, [selectedVerses, panels]);
+
+    return `${selection.book} ${selection.chapter}:${ranges.join(", ")}`;
+  }, []);
+
+  const getSelectedReference = useCallback(() => {
+    if (selectedVerses.size === 0) return "";
+    const selectedVersesGrouped = groupByBookChapter(Array.from(selectedVerses));
+    return selectedVersesGrouped.map(selection => handleParseSelectedVerses(selection)) || [];
+  }, [selectedVerses, handleParseSelectedVerses]);
 
   const handleAddToGuide = useCallback(() => {
     setSelectedVerses(prevSelected => {
       if (prevSelected.size === 0 || !panels[0].book) return prevSelected;
-      
-      const verses = Array.from(prevSelected).sort((a, b) => a - b);
+
+      const verses = Array.from(prevSelected).sort((a, b) => a.verse - b.verse);
       const reference = {
         book: panels[0].book,
         chapter: parseInt(panels[0].chapter),
         startVerse: verses[0],
         endVerse: verses[verses.length - 1],
-      };   
+      };
       return new Set();
     });
     setRangeStart(null);

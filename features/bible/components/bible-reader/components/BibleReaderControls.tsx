@@ -1,20 +1,36 @@
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Plus, Minus, Type } from "lucide-react"
 import { VersionPanel } from "@/features/bible/components/bible-reader/types"
+import { SelectedVerse } from "@/features/bible/types";
+import { ScriptureSelectionBadge } from "./ScriptureSelectionBadge";
+import { badgeColorSchemes } from "./ScriptureSelectionBadgeColors";
 
 interface BibleReaderControlsProps {
     panels: VersionPanel[];
     addPanel: () => void;
     clearSelection: () => void;
-    getSelectedReference: () => string;
-    selectedVerses: Set<number>;
+    getSelectedReference: () => string[];
+    selectedVerses: Set<SelectedVerse>;
     fontSize: number;
     increaseFontSize: () => void;
     decreaseFontSize: () => void;
 }
 
-export function BibleReaderControls({ panels, addPanel, clearSelection, getSelectedReference, selectedVerses, fontSize, increaseFontSize, decreaseFontSize }: BibleReaderControlsProps) {
+const removeReference = (reference: string) => {
+    console.log(reference);
+}
+
+const handleReferenceMenu = (reference: string) => {
+    // Placeholder callback for menu icon
+    console.log('Menu clicked for:', reference);
+}
+
+
+
+export function BibleReaderControls({ 
+    panels, addPanel, clearSelection, getSelectedReference, 
+    selectedVerses, fontSize, increaseFontSize, decreaseFontSize 
+}: BibleReaderControlsProps) {
     return (
         <div className="px-6 py-4 border-b border-border/50 bg-muted/20 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -60,11 +76,18 @@ export function BibleReaderControls({ panels, addPanel, clearSelection, getSelec
             </div>
             {selectedVerses.size > 0 && (
                 <div className="flex items-center gap-3">
-                    <div className="px-4 py-2 rounded-lg bg-primary/10 border border-primary/20">
-                        <span className="text-sm font-medium text-primary">
-                            {getSelectedReference()}
-                        </span>
-                    </div>
+                    {getSelectedReference().map((reference, index) => {
+                        const colorScheme = badgeColorSchemes[index % badgeColorSchemes.length];
+                        return (
+                            <ScriptureSelectionBadge
+                                key={index}
+                                reference={reference}
+                                colorScheme={colorScheme}
+                                index={index}
+                                removeReference={() => removeReference(reference)}
+                            />
+                        );
+                    })}
                     <Button
                         variant="ghost"
                         size="sm"

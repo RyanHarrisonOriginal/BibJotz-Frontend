@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react';
 import { BiblicalReferenceList, type BiblicalReference } from './BiblicalReferenceList';
 import { BookOpen } from 'lucide-react';
 import { Card } from '@/components/ui/Card/card';
-import { BibleReaderModal } from '@/features/bible/components/bible-reader/components/Reader';
+import { BibleReaderModal } from '@/features/bible/components/bible-reader/components/BibleReader';
 import * as React from 'react';
 
 type AddGuideBiblicalReferenceProps = {

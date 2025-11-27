@@ -4,8 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useBibleReader } from "@/features/bible/components/bible-reader/hooks/useBibleReader";
-import { BibleReaderPannel } from "@/features/bible/components/bible-reader/components/Pannel";
-import { BibleReaderControls } from "@/features/bible/components/bible-reader/components/Controls";
+import { ScripturePannel } from "@/features/bible/components/bible-reader/components/ScripturePannel";
+import { BibleReaderControls } from "@/features/bible/components/bible-reader/components/BibleReaderControls";
 import { useEffect, useState } from "react";
 
 interface BibleReaderModalProps {
@@ -50,8 +50,8 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[80vw] max-w-[80vw] h-[85vh] p-0 bg-gradient-to-br from-background via-background to-muted/30">
-        <DialogHeader className="p-6 pb-4 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-transparent">
+      <DialogContent className="w-[80vw] max-w-[80vw] h-[85vh] p-0 bg-background">
+        <DialogHeader className="p-6 pb-4 border-b border-primary/10 bg-background">
           <DialogTitle className="text-2xl font-serif text-primary">Bible Reader</DialogTitle>
           <p className="text-sm text-muted-foreground mt-1">Select verses to add to your guide</p>
         </DialogHeader>
@@ -61,11 +61,11 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
           panels={panels} 
           addPanel={addPanel} 
           clearSelection={clearSelection} 
-          getSelectedReference={getSelectedReference} 
+          getSelectedReference={() => getSelectedReference() || []} 
           selectedVerses={selectedVerses}
           fontSize={fontSize}
-          increaseFontSize={increaseFontSize}
-          decreaseFontSize={decreaseFontSize}
+          increaseFontSize={() => increaseFontSize()}
+          decreaseFontSize={() => decreaseFontSize()}
           />
 
           {/* Panels */}
@@ -76,7 +76,7 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
               'p-4' : 'p-6'} flex-1 min-h-0 overflow-hidden`}
               style={{ gridAutoRows: 'minmax(0, 1fr)' }}>
             {panels.map((panel, index) => (
-              <BibleReaderPannel 
+              <ScripturePannel 
               key={panel.id} 
               panel={panel} 
               index={index}
@@ -94,7 +94,7 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
           </div>
 
           {/* Footer Actions */}
-          <div className="px-6 py-4 border-t border-border/50 bg-gradient-to-r from-muted/20 to-transparent flex items-center justify-between">
+          <div className="px-6 py-4 border-t border-border/50 bg-background flex items-center justify-between">
             <p className="text-xs text-muted-foreground font-medium">
               💡 Click verses to select • Hold Shift and click to select a range
             </p>

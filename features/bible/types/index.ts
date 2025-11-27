@@ -37,4 +37,8 @@ export type BookInfo = {
     language: string;
 }
 
-  
+export interface SelectedVerse {
+  book: string;
+  chapter: number;
+  verse: number;
+}
