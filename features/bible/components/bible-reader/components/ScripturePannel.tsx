@@ -1,5 +1,4 @@
 import { ScrollArea } from "@/components/ui/ScrollArea/scroll-area";
-import { BOOKS, mockVerses } from "./test-constants";
 import { VersionPanel } from "@/features/bible/components/bible-reader/types";
 import { TranslationSelect, BookSelect, ChapterSelect, DeletePanelButton } from "./PanelOptions";
 import { BibleTranslation, BookInfo, SelectedVerse, Verse, VerseText } from "@/features/bible/types";
@@ -7,6 +6,7 @@ import { useMemo, useCallback, memo } from "react";
 import { BookAutocomplete } from "../../book-autocomplete/component/BookAutocomplete";
 import Scriptures from "./Scripures";
 import { ScripturePanelSkeleton } from "./ScripturePanelSkeleton";
+import { badgeColorSchemes } from "./ScriptureSelectionBadgeColors";
 
 interface ScripturePannelProps {
     panel: VersionPanel;
@@ -14,12 +14,14 @@ interface ScripturePannelProps {
     updatePanel: (id: string, field: keyof VersionPanel, value: string) => void;
     removePanel: (id: string) => void;
     handleVerseClick: (verse: SelectedVerse, isShiftKey: boolean) => void;
-    selectedVerses: Set<SelectedVerse>;
     includeRemoveButton?: boolean;
     translations: BibleTranslation[];
     fontSize: number;
     books: BookInfo[];
     versesText: VerseText | undefined;
+    selectedVerses: Set<SelectedVerse>;
+    checkVerseIsInArray: (arr: SelectedVerse[], verse: SelectedVerse) => boolean;
+    getBookChapterArray: (refs: SelectedVerse[]) => string[];
 }
 
 export const ScripturePannel = memo(({
@@ -29,11 +31,17 @@ export const ScripturePannel = memo(({
     removePanel,
     handleVerseClick,
     translations,
-    selectedVerses,
     includeRemoveButton = true,
     fontSize,
     books,
-    versesText }: ScripturePannelProps) => {
+    versesText,
+    selectedVerses,
+    checkVerseIsInArray,
+    getBookChapterArray }: ScripturePannelProps) => {
+
+    const bookChapterArray = getBookChapterArray(Array.from(selectedVerses));
+
+    const colorScheme = badgeColorSchemes[bookChapterArray.indexOf(`${panel.book}:${panel.chapter}`) % badgeColorSchemes.length];
 
 
     const handleVersionUpdate = useCallback((value: string) => {
@@ -55,7 +63,6 @@ export const ScripturePannel = memo(({
     const getMaxChapters = useCallback((panelBook: string) => {
         return books.find((book: BookInfo) => book.code === panelBook)?.numberOfChapters || 0;
     }, [books]);
-
     return (
         <div
             key={panel.id}
@@ -102,11 +109,15 @@ export const ScripturePannel = memo(({
                                     key={v.verse}
                                     number={v.verse}
                                     text={v.texts[0]?.text || ''}
-                                    isSelected={selectedVerses.has({ book: panel.book, chapter: parseInt(panel.chapter), verse: v.verse})}
                                     onClick={handleVerseClick}
                                     fontSize={fontSize}
                                     book={panel.book}
                                     chapter={parseInt(panel.chapter)}
+                                    index={index}
+                                    selectedVerses={selectedVerses}
+                                    checkVerseIsInArray={checkVerseIsInArray}
+                                    getBookChapterArray={getBookChapterArray}
+                                    colorScheme={colorScheme}
                                 />
                             ))
                         ) : (

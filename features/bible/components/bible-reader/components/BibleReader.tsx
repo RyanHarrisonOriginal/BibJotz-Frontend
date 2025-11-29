@@ -6,18 +6,32 @@ import { Plus } from "lucide-react";
 import { useBibleReader } from "@/features/bible/components/bible-reader/hooks/useBibleReader";
 import { ScripturePannel } from "@/features/bible/components/bible-reader/components/ScripturePannel";
 import { BibleReaderControls } from "@/features/bible/components/bible-reader/components/BibleReaderControls";
+import { ScriptureSelectionList } from "@/features/bible/components/bible-reader/components/ScriptureSelectionList";
 import { useEffect, useState } from "react";
+import { SelectedVerse } from "@/features/bible/types";
+import { BiblicalReference } from "@/features/guide/creation-form/components/BiblicalReferenceList";
 
 interface BibleReaderModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelectReference?: (reference: { book: string; chapter: number; startVerse: number; endVerse: number }) => void;
+  verseSelectionCallback?: (verse: SelectedVerse) => void;
+  actionButtonCallback?: (verses: BiblicalReference[]) => void;
+  ActionButtonComponent?: React.ComponentType<{
+    onClick: () => void;
+    color?: string;
+  }>;
 }
 
 
 
 
-export function BibleReaderModal({ open, onOpenChange, onSelectReference }: BibleReaderModalProps) {
+export function BibleReaderModal({
+  open,
+  onOpenChange,
+  verseSelectionCallback = () => { },
+  actionButtonCallback = () => { },
+  ActionButtonComponent }: BibleReaderModalProps) {
   // Only mount on client to avoid hydration issues
   const [mounted, setMounted] = useState(false);
 
@@ -39,16 +53,29 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
     handleVerseClick,
     clearSelection,
     getSelectedReference,
-    handleAddToGuide,
+    getSelectedReferenceObjects,
+    removeReference,
     increaseFontSize,
-    decreaseFontSize
+    decreaseFontSize,
+    verseIsInArray,
+    getBookChapterArray
   } = useBibleReader();
 
   if (!mounted) {
     return null;
   }
 
-  return (
+  const onVerseSelect = (verse: SelectedVerse, isShiftKey: boolean) => {
+    handleVerseClick(verse, isShiftKey);
+    verseSelectionCallback(verse);
+  }
+
+  const handleActionButton = () => {
+    const bibleReaderReferenceObjects = getSelectedReferenceObjects(selectedVerses);
+    actionButtonCallback(bibleReaderReferenceObjects);
+  }
+
+   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[80vw] max-w-[80vw] h-[85vh] p-0 bg-background">
         <DialogHeader className="p-6 pb-4 border-b border-primary/10 bg-background">
@@ -57,40 +84,51 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
         </DialogHeader>
 
         <div className="flex flex-col h-full min-h-0">
-          <BibleReaderControls 
-          panels={panels} 
-          addPanel={addPanel} 
-          clearSelection={clearSelection} 
-          getSelectedReference={() => getSelectedReference() || []} 
-          selectedVerses={selectedVerses}
-          fontSize={fontSize}
-          increaseFontSize={() => increaseFontSize()}
-          decreaseFontSize={() => decreaseFontSize()}
+          <BibleReaderControls
+            panels={panels}
+            addPanel={addPanel}
+            fontSize={fontSize}
+            increaseFontSize={increaseFontSize}
+            decreaseFontSize={decreaseFontSize}
           />
 
-          {/* Panels */}
-          <div className={
-              `grid ${panels.length === 1 ? 
-              'grid-cols-1' : panels.length === 2 ? 
-              'grid-cols-2' : 'grid-cols-3'} gap-6 ${panels.length === 1 ? 
-              'p-4' : 'p-6'} flex-1 min-h-0 overflow-hidden`}
-              style={{ gridAutoRows: 'minmax(0, 1fr)' }}>
-            {panels.map((panel, index) => (
-              <ScripturePannel 
-              key={panel.id} 
-              panel={panel} 
-              index={index}
-              versesText={panelVersesText[index] || undefined}
-              updatePanel={updatePanel} 
-              removePanel={removePanel} 
-              handleVerseClick={handleVerseClick} 
-              selectedVerses={selectedVerses} 
-              includeRemoveButton={panels.length > 1} 
-              translations={translations}
-              books={panelBooks[index] || []}
-              fontSize={fontSize}
+          {/* Panels and Selection List */}
+          <div className="flex gap-6 flex-1 min-h-0 overflow-hidden p-6">
+            {/* Selection List - shown next to first panel */}
+            {selectedVerses.size > 0 && (
+              <ScriptureSelectionList
+                references={getSelectedReference()}
+                selectedVerses={selectedVerses}
+                clearSelection={clearSelection}
+                removeReference={removeReference}
               />
-            ))}
+            )}
+
+            {/* Panels Grid */}
+            <div className={
+              `grid ${panels.length === 1 ?
+                'grid-cols-1' : panels.length === 2 ?
+                  'grid-cols-2' : 'grid-cols-3'} gap-6 flex-1 min-h-0 overflow-hidden`}
+              style={{ gridAutoRows: 'minmax(0, 1fr)' }}>
+              {panels.map((panel, index) => (
+                <ScripturePannel
+                  key={panel.id}
+                  panel={panel}
+                  index={index}
+                  versesText={panelVersesText[index] || undefined}
+                  updatePanel={updatePanel}
+                  removePanel={removePanel}
+                  handleVerseClick={onVerseSelect}
+                  includeRemoveButton={panels.length > 1}
+                  translations={translations}
+                  books={panelBooks[index] || []}
+                  fontSize={fontSize}
+                  selectedVerses={selectedVerses}
+                  checkVerseIsInArray={verseIsInArray}
+                  getBookChapterArray={getBookChapterArray}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Footer Actions */}
@@ -98,16 +136,12 @@ export function BibleReaderModal({ open, onOpenChange, onSelectReference }: Bibl
             <p className="text-xs text-muted-foreground font-medium">
               💡 Click verses to select • Hold Shift and click to select a range
             </p>
-            {selectedVerses.size > 0 && (
-              <Button
-                onClick={handleAddToGuide}
-                size="sm"
-                className="gap-2 shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              >
-                <Plus className="h-4 w-4" />
-                Add to Guide
-              </Button>
-            )}
+
+            {ActionButtonComponent &&
+              <ActionButtonComponent 
+              onClick={handleActionButton} 
+              color="primary" />}
+
           </div>
         </div>
       </DialogContent>

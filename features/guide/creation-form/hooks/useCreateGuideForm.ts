@@ -1,6 +1,10 @@
 import { useState, useCallback } from 'react';
-import { type BiblicalReference } from './BiblicalReferenceList';
-import { type GuideSection } from './AddGuideSection';
+import { type GuideSection } from '../components/GuideSections';
+import { type BiblicalReference } from '../components/BiblicalReferenceList';
+import { SelectedVerse } from '@/features/bible/types';
+
+// Re-export for convenience
+export type { BiblicalReference } from '../components/BiblicalReferenceList';
 
 export type CreateGuideFormData = {
   name: string;
@@ -35,8 +39,13 @@ export function useCreateGuideForm() {
   }, []);
 
   // Biblical reference handlers
-  const addReference = useCallback(() => {
-    setBiblicalReferences((prev) => [...prev, { book: '', chapter: 1, startVerse: 1, endVerse: 1 }]);
+  const addReference = useCallback((reference: BiblicalReference) => {
+    setBiblicalReferences((prev) => [...prev, reference]);
+  }, []);
+
+  const addBiblicalReferences = useCallback((references: BiblicalReference[]) => {
+    console.log('References:', references.flat());
+    setBiblicalReferences((prev) => [...prev, ...references.flat()]);
   }, []);
 
   const removeReference = useCallback((index: number) => {
@@ -48,7 +57,7 @@ export function useCreateGuideForm() {
     });
   }, []);
 
-  const updateReference = useCallback((index: number, field: keyof BiblicalReference, value: string | number) => {
+  const updateGuideReference = useCallback((index: number, field: keyof BiblicalReference, value: string | number) => {
     setBiblicalReferences((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], [field]: value };
@@ -165,10 +174,11 @@ export function useCreateGuideForm() {
     
     // Handlers
     handleNameChange,
+    addBiblicalReferences,
     handleDescriptionChange,
     addReference,
     removeReference,
-    updateReference,
+    updateGuideReference,
     addSection,
     removeSection,
     updateSection,
@@ -180,5 +190,4 @@ export function useCreateGuideForm() {
     handlePublish,
   };
 }
-
 

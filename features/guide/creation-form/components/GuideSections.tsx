@@ -13,7 +13,7 @@ export type GuideSection = {
   biblicalReferences: BiblicalReference[];
 };
 
-type AddGuideSectionProps = {
+type GuideSectionsProps = {
   guideSections: GuideSection[];
   expandedSections: Set<number>;
   onAddSection: () => void;
@@ -25,7 +25,7 @@ type AddGuideSectionProps = {
   onUpdateSectionReference: (sectionIndex: number, refIndex: number, field: keyof BiblicalReference, value: string | number) => void;
 };
 
-export function AddGuideSection({
+export function GuideSections({
   guideSections,
   expandedSections,
   onAddSection,
@@ -35,7 +35,7 @@ export function AddGuideSection({
   onAddSectionReference,
   onRemoveSectionReference,
   onUpdateSectionReference,
-}: AddGuideSectionProps) {
+}: GuideSectionsProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -68,6 +68,7 @@ export function AddGuideSection({
                     onChange={(e) => onUpdateSection(sectionIndex, 'title', e.target.value)}
                     placeholder="Section title"
                     className="w-full border-0 bg-transparent text-2xl font-semibold font-serif outline-none placeholder:text-muted-foreground/40"
+                    suppressHydrationWarning
                   />
 
                   <textarea
@@ -75,6 +76,7 @@ export function AddGuideSection({
                     onChange={(e) => onUpdateSection(sectionIndex, 'description', e.target.value)}
                     placeholder="Describe this section..."
                     className="w-full resize-none border-0 bg-transparent text-base outline-none placeholder:text-muted-foreground/40 min-h-[60px]"
+                    suppressHydrationWarning
                   />
                 </div>
 

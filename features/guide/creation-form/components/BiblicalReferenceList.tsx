@@ -9,6 +9,8 @@ import { NumberDropdown } from './NumberDropdown';
 import { VerseDropdown } from './VerseDropdown';
 import { useBooks } from '@/features/bible/hooks/useBibleApi';
 import { ChapterDropdown } from './ChapterDropdown';
+import { getPassageColorScheme } from '@/features/bible/utils/passageColorSchemes';
+import { InlineEditableReference } from './InlineEditableReference';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -27,7 +29,7 @@ type BiblicalReferenceListProps = {
   onUpdateReference: (index: number, field: keyof BiblicalReference, value: string | number) => void;
   variant?: 'card' | 'inline';
   showRemoveButton?: (index: number, total: number) => boolean;
-  NoReferenceComponent?: React.ReactNode;
+  EmptyBiblicalReferenceComponent?: React.ReactNode;
 };
 
 // Component to track reference changes and apply glow effect
@@ -70,12 +72,12 @@ function ReaderButtonWithGlow({
       disabled={!reference.book || reference.chapter === 0}
       title="Open reader"
       className={cn(
-        'h-9 w-9 transition-all duration-300',
-        isGlowing && 'shadow-lg shadow-primary/50 ring-2 ring-primary/50 ring-offset-2'
+        'h-6 w-6 transition-all duration-300',
+        isGlowing && 'shadow-lg shadow-primary/50 ring-2 ring-primary/50 ring-offset-1'
       )}
     >
       <BookOpen className={cn(
-        'h-4 w-4 text-muted-foreground hover:text-foreground transition-colors',
+        'h-2.5 w-2.5 text-muted-foreground hover:text-foreground transition-colors',
         isGlowing && 'text-primary'
       )} />
     </Button>
@@ -88,9 +90,11 @@ export function BiblicalReferenceList({
   onUpdateReference,
   variant = 'card',
   showRemoveButton = (index, total) => total > 0,
-  NoReferenceComponent,
+  EmptyBiblicalReferenceComponent,
 }: BiblicalReferenceListProps) {
   const { data: books = [] } = useBooks();
+
+  console.log('biblicalReferences:', biblicalReferences);
 
   const handleBookSelect = (index: number, book: { code: string; name: string }, ref: BiblicalReference) => {
     onUpdateReference(index, 'bookCode', book.code);
@@ -112,40 +116,46 @@ export function BiblicalReferenceList({
       <>
         {biblicalReferences.map((ref, index) => {
           return (
-            <div key={index} className="flex items-start gap-2 p-3 bg-muted/30 rounded-lg">
-              <div className="flex-1 grid grid-cols-4 gap-2">
+            <div key={index} className="group flex items-center gap-1.5 p-1.5 rounded bg-muted/20 hover:bg-muted/30 transition-colors">
+              <div className="flex-1 flex items-center gap-1 flex-wrap">
                 <BookAutocomplete
                   placeholder="Book"
                   value={ref.book}
                   onChange={(value) => onUpdateReference(index, 'book', value)}
                   onBookSelect={(book ) => handleBookSelect(index, book, ref)}
-                  className="h-9"
+                  className="h-6 text-xs min-w-[80px] flex-1 max-w-[120px]"
                 />
                 <ChapterDropdown
                   value={ref.chapter}
                   onChange={(value) => onUpdateReference(index, 'chapter', value)}
                   book={ref.book}
                   placeholder="Ch"
-                  className="h-9"
+                  className="h-6 w-12 text-xs"
                 />
+                <span className="text-muted-foreground text-[10px]">:</span>
                 <VerseDropdown
                   book={ref.book}
                   chapter={ref.chapter}
                   value={ref.startVerse}
                   onChange={(value) => handleStartVerseSelect(index, value, ref)}
-                  placeholder="Start"
-                  className="h-9"
+                  placeholder="v"
+                  className="h-6 w-12 text-xs"
                 />
-                <VerseDropdown
-                  book={ref.book}
-                  chapter={ref.chapter}
-                  value={ref.endVerse}
-                  onChange={(value) => onUpdateReference(index, 'endVerse', value)}
-                  placeholder="End"
-                  className="h-9"
-                />
+                {ref.startVerse !== ref.endVerse && (
+                  <>
+                    <span className="text-muted-foreground text-[10px]">-</span>
+                    <VerseDropdown
+                      book={ref.book}
+                      chapter={ref.chapter}
+                      value={ref.endVerse}
+                      onChange={(value) => onUpdateReference(index, 'endVerse', value)}
+                      placeholder="v"
+                      className="h-6 w-12 text-xs"
+                    />
+                  </>
+                )}
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <ReaderButtonWithGlow reference={ref} index={index} />
                 {showRemoveButton(index, biblicalReferences.length) && (
                   <Button
@@ -153,9 +163,9 @@ export function BiblicalReferenceList({
                     variant="ghost"
                     size="icon"
                     onClick={() => onRemoveReference(index)}
-                    className="h-9 w-9"
+                    className="h-6 w-6"
                   >
-                    <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                    <Trash2 className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" />
                   </Button>
                 )}
               </div>
@@ -166,89 +176,39 @@ export function BiblicalReferenceList({
     );
   }
 
-  // Card variant (default)
+  // Card variant (default) - grid layout with color scheme
+  // Use the generalized passage color scheme for consistent highlighting
+
+  // Determine grid columns based on count
+  const getGridCols = () => {
+    if (biblicalReferences.length === 0) return 'grid-cols-1';
+    if (biblicalReferences.length === 1) return 'grid-cols-1';
+    if (biblicalReferences.length === 2) return 'grid-cols-2';
+    return 'grid-cols-2 md:grid-cols-3';
+  };
+
   return (
-    <div className="space-y-3">
-      {
-      
-      
-      biblicalReferences.length === 0 ? NoReferenceComponent :
-      
-      
-      
-      biblicalReferences.map((ref, index) => {
-        
-        return (
-          <Card key={index} className="p-4 hover:border-primary/50 transition-colors">
-            <div className="space-y-3">
-              <div className="flex items-end gap-3">
-                <div className="flex-1 grid grid-cols-4 gap-3">
-                  <div className="col-span-2 space-y-1">
-                    <label className="text-xs text-muted-foreground font-medium">Book</label>
-                    <BookAutocomplete
-                      placeholder="Book"
-                      value={ref.book}
-                      onChange={(value) => onUpdateReference(index, 'book', value)}
-                      onBookSelect={(book) => handleBookSelect(index, book, ref)}
-                      className="h-9"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs text-muted-foreground font-medium">Chapter</label>
-                    <ChapterDropdown
-                      value={ref.chapter}
-                      onChange={(value) => onUpdateReference(index, 'chapter', value)}
-                      book={ref.book}
-                      placeholder="Ch"
-                      className="h-9"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <label className="text-xs text-muted-foreground font-medium">Start</label>
-                      <VerseDropdown
-                        book={ref.book}
-                        chapter={ref.chapter}
-                        value={ref.startVerse}
-                        onChange={(value) => handleStartVerseSelect(index, value, ref)}
-                        placeholder="Verse"
-                        className="h-9"
-                        enabled={ref.chapter > 0}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs text-muted-foreground font-medium">End</label>
-                      <VerseDropdown
-                        book={ref.book}
-                        chapter={ref.chapter}
-                        value={ref.endVerse}
-                        onChange={(value) => onUpdateReference(index, 'endVerse', value)}
-                        placeholder="Verse"
-                        className="h-9"
-                        fromVerse={ref.startVerse}
-                        enabled={ref.startVerse > 0}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <ReaderButtonWithGlow reference={ref} index={index} />
-                  {showRemoveButton(index, biblicalReferences.length) && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onRemoveReference(index)}
-                    >
-                      <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </Card>
-        );
-      })}
+    <div className={cn('grid gap-1.5', getGridCols())}>
+      {biblicalReferences.length === 0 ? (
+        <div className="col-span-full">{EmptyBiblicalReferenceComponent}</div>
+      ) : (
+        biblicalReferences.map((ref, index) => {
+          const colorScheme = getPassageColorScheme(index);
+          return (
+            <InlineEditableReference
+              key={index}
+              reference={ref}
+              index={index}
+              colorScheme={colorScheme}
+              onUpdateReference={onUpdateReference}
+              onRemoveReference={onRemoveReference}
+              showRemoveButton={showRemoveButton(index, biblicalReferences.length)}
+              onBookSelect={handleBookSelect}
+              onStartVerseSelect={handleStartVerseSelect}
+            />
+          );
+        })
+      )}
     </div>
   );
 }

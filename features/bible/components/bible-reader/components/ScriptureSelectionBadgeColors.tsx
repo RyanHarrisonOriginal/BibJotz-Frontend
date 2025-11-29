@@ -1,33 +1,17 @@
-// Color scheme configurations for reference badges using bright colors from CSS variables
-export const badgeColorSchemes = [
-    {
-        bgColor: 'hsl(var(--bright-violet) / 0.15)',
-        borderColor: 'hsl(var(--bright-violet) / 0.30)',
-        textColor: 'black',
-        hoverColor: 'hsl(var(--bright-violet) / 0.25)'
-    },
-    {
-        bgColor: 'hsl(var(--bright-ember) / 0.15)',
-        borderColor: 'hsl(var(--bright-ember) / 0.30)',
-        textColor: 'black',
-        hoverColor: 'hsl(var(--bright-ember) / 0.25)'
-    },
-    {
-        bgColor: 'hsl(var(--bright-cyan) / 0.15)',
-        borderColor: 'hsl(var(--bright-cyan) / 0.30)',
-        textColor: 'black',
-        hoverColor: 'hsl(var(--bright-cyan) / 0.25)'
-    },
-    {
-        bgColor: 'hsl(var(--bright-rose) / 0.15)',
-        borderColor: 'hsl(var(--bright-rose) / 0.30)',
-        textColor: 'black',
-        hoverColor: 'hsl(var(--bright-rose) / 0.25)'
-    },
-    {
-        bgColor: 'hsl(var(--bright-mint) / 0.15)',
-        borderColor: 'hsl(var(--bright-mint) / 0.30)',
-        textColor: 'black',
-        hoverColor: 'hsl(var(--bright-mint) / 0.25)'
-    },
-];
+/**
+ * Color scheme configurations for scripture selection badges
+ * 
+ * Uses the generalized passage color scheme generator for consistency
+ * across the application.
+ */
+
+import { bibleBookColorSchemes, type PassageColorScheme } from '@/features/bible/utils/passageColorSchemes';
+
+/**
+ * Pre-generated color schemes for 66 books of the Bible
+ * @deprecated Use bibleBookColorSchemes from @/features/bible/utils/passageColorSchemes instead
+ */
+export const badgeColorSchemes: PassageColorScheme[] = bibleBookColorSchemes;
+
+// Re-export for convenience
+export { bibleBookColorSchemes, type PassageColorScheme } from '@/features/bible/utils/passageColorSchemes';
