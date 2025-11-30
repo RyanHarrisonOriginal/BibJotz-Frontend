@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "features/bible/components/bible-reader/hooks/useVersSelectionDisplay.ts"  ],
   "exclude": ["node_modules"]
 }

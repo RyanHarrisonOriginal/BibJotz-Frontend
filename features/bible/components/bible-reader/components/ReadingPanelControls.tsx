@@ -2,10 +2,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScrollArea } from "@/components/ui/ScrollArea/scroll-area";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { BOOKS } from "./test-constants";
 import { BibleTranslation, BookInfo } from "@/features/bible/types";
 import { useCallback, memo } from "react";
-import { useBooks } from "@/features/bible/hooks/useBibleApi";
 
 interface TranslationSelectProps {
     version: string;
@@ -20,15 +18,15 @@ interface BookSelectProps {
 }
 
 interface ChapterSelectProps {
-    chapter: string;
+    chapter: number;
     maxChapters: number;
-    updatePanel: (value: string) => void;
+    updatePanel: (value: number) => void;
 }
 
 interface DeletePanelButtonProps {
-    removePanel: (id: string) => void;
+    removePanel: (id: number) => void;
     includeRemoveButton: boolean;
-    id: string;
+    id: number;
 }
 
 export const TranslationSelect = memo(({ version, translations, updatePanel }: TranslationSelectProps) => {
@@ -80,8 +78,8 @@ export const ChapterSelect = memo(({ chapter, maxChapters, updatePanel }: Chapte
     const CHAPTER_NUMBERS = Array.from({ length: maxChapters }, (_, i) => i + 1);
     return (
         <Select
-            value={chapter}
-            onValueChange={updatePanel}
+            value={chapter.toString()}
+            onValueChange={(value: string) => updatePanel(parseInt(value))}
         >
             <SelectTrigger className="h-9 w-24 border-border/50 hover:border-primary/30 transition-colors">
                 <SelectValue />

@@ -1,13 +1,14 @@
 'use client';
 
 import { BiblicalReferenceList, type BiblicalReference } from './BiblicalReferenceList';
-import { BibleReaderModal } from '@/features/bible/components/bible-reader/components/BibleReader';
+import { BibleReaderModal } from '@/features/bible/components/bible-reader/components/BibleReaderModal';
 import * as React from 'react';
 import { GuideBiblicalReferenceHeader } from './GuideBiblicalReferenceHeader';
 import { EmptyBiblicalReferenceCard } from '@/features/guide/creation-form/components/EmptyBiblicalReferenceCard';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useCallback } from 'react';
+import { SelectedReadingPanelVerses } from '@/features/bible/components/bible-reader/types';
 
 type GuideBiblicalReferenceProps = {
   biblicalReferences: BiblicalReference[];
@@ -40,8 +41,13 @@ export function GuideBiblicalReference({
 
   const [bibleReaderOpen, setBibleReaderOpen] = React.useState<boolean>(false);
 
-  const handleActionButtonCallback = useCallback((references: BiblicalReference[]) => {
-    addBiblicalReferences(references)
+  const handleActionButtonCallback = useCallback((verses: SelectedReadingPanelVerses) => {
+    addBiblicalReferences(verses.map((verse): BiblicalReference => ({
+      book: verse.book,
+      chapter: verse.chapter,
+      startVerse: verse.verse,
+      endVerse: verse.verse,
+    })))
     setBibleReaderOpen(false)
   }, [addBiblicalReferences]);
 

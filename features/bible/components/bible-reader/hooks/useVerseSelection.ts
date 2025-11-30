@@ -1,57 +1,84 @@
 import { useState, useCallback } from "react";
 import { SelectedVerse } from "@/features/bible/types";
+import { ReadingPanelVerse, SelectedReadingPanelVerse, SelectedReadingPanelVerses } from "@/features/bible/components/bible-reader/types";
 
 export function useVerseSelection() {
-  const [selectedVerses, setSelectedVerses] = useState<Set<SelectedVerse>>(new Set());
-  const [rangeStart, setRangeStart] = useState<SelectedVerse | null>(null);
 
-  const verseIsInArray = useCallback((arr: SelectedVerse[], obj: SelectedVerse): boolean => {
-    return arr.some(item => item.book === obj.book && item.chapter === obj.chapter && item.verse === obj.verse);
+  const [selectedVerses, setSelectedVerses] = useState<SelectedReadingPanelVerses>([]);
+  const [selectedVersesKeys, setSelectedVersesKeys] = useState<Set<string>>(new Set());
+  const [selectedChaptersKeys, setSelectedChaptersKeys] = useState<Set<string>>(new Set());
+  const [selectionRangeStart, setSelectionRangeStart] = useState<SelectedReadingPanelVerse | null>(null);
+
+  const verseKey = useCallback(( selectedVerse: SelectedReadingPanelVerse ): string => {
+    return `${selectedVerse.book}:${selectedVerse.chapter}:${selectedVerse.verse}`;
   }, []);
 
-  const removeVerseFromArray = useCallback((arr: SelectedVerse[], obj: SelectedVerse): Set<SelectedVerse> => {
-    let filteredArr = arr.filter(item => item.book !== obj.book || item.chapter !== obj.chapter || item.verse !== obj.verse);
-    return new Set(filteredArr);
+  const chapterKey = useCallback(( selectedVerse: SelectedReadingPanelVerse ): string => {
+    return `${selectedVerse.book}:${selectedVerse.chapter}`;
   }, []);
 
-  const handleVerseClick = useCallback((verse: SelectedVerse, isShiftKey: boolean) => {
+  const isVerseSelected = useCallback((selectedVerse: SelectedReadingPanelVerse): boolean => {
+    return selectedVersesKeys.has(verseKey(selectedVerse));
+  }, []);
+
+  const remove = useCallback((selectedVerse: SelectedReadingPanelVerse) => {
+    setSelectedVersesKeys(prevKeys => {
+      const newKeys = new Set(prevKeys);
+      newKeys.delete(verseKey(selectedVerse));
+      return newKeys;
+    });
+  }, []);
+
+  const add = useCallback((selectedVerse: SelectedReadingPanelVerse) => {
+    setSelectedVersesKeys(prevKeys => {
+      const newKeys = new Set(prevKeys);
+      newKeys.add(verseKey(selectedVerse));
+      return newKeys;
+    });
+  }, []);
+
+  const toggleVerseSelection = useCallback((selectedVerse: SelectedReadingPanelVerse, isShiftKey: boolean) => {
     setSelectedVerses(prevSelected => {
-      let newSelected = new Set(prevSelected);
+      let newSelected = [...prevSelected];
 
-      if (isShiftKey && rangeStart !== null) {
+      if (isShiftKey && selectionRangeStart !== null) {
         // Range selection
-        const start = Math.min(rangeStart.verse, verse.verse);
-        const end = Math.max(rangeStart.verse, verse.verse);
+        const start = Math.min(selectionRangeStart.verse, selectedVerse.verse);
+        const end = Math.max(selectionRangeStart.verse, selectedVerse.verse);
         for (let i = start; i <= end; i++) {
-          newSelected.add({ book: verse.book, chapter: verse.chapter, verse: i });
+          newSelected.push({ book: selectedVerse.book, chapter: selectedVerse.chapter, verse: i });
         }
-        setRangeStart(null);
+        setSelectionRangeStart(null);
       } else {
         // Single selection or start of range
-        if (verseIsInArray(Array.from(newSelected), verse)) {
-          newSelected = removeVerseFromArray(Array.from(newSelected), verse);
-          setRangeStart(null);
+        if (isVerseSelected(selectedVerse)) {
+          newSelected = newSelected.filter(verse => verse.book !== selectedVerse.book || verse.chapter !== selectedVerse.chapter || verse.verse !== selectedVerse.verse);
+          setSelectionRangeStart(null);
         } else {
-          newSelected.add(verse);
-          setRangeStart(verse);
+          newSelected.push(selectedVerse);
+          setSelectionRangeStart(selectedVerse);
         }
       }
       return newSelected;
     });
-  }, [rangeStart, verseIsInArray, removeVerseFromArray]);
+  }, [selectionRangeStart]);
 
   const clearSelection = useCallback(() => {
-    setSelectedVerses(new Set());
-    setRangeStart(null);
+    setSelectedVerses([]);
+    setSelectedVersesKeys(new Set());
+    setSelectionRangeStart(null);
   }, []);
 
   return {
-    selectedVerses,
-    rangeStart,
-    handleVerseClick,
-    clearSelection,
-    verseIsInArray,
-    setSelectedVerses,
+    verseSelection: {
+      selectedVerses,
+      selectionRangeStart,
+      toggleVerseSelection,
+      clearSelection,
+      remove,
+      add,
+    },
+    isVerseSelected,
   };
 }
 

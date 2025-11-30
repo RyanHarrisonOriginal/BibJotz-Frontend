@@ -1,49 +1,41 @@
-import { SelectedVerse } from "@/features/bible/types";
-import { memo, useCallback, useMemo, useEffect } from "react";
-import { badgeColorSchemes } from "./ScriptureSelectionBadgeColors";
+import { memo, useCallback, useMemo } from "react";
+import { SelectedReadingPanelVerse } from "../types";
+import { getPassageColorScheme } from "@/features/bible/utils/passageColorSchemes";
 
 
 interface ScripturesProps {
     number: number;
     text: string;
-    onClick: (verse: SelectedVerse, isShiftKey: boolean) => void;
+    key: string;
+    ref: { book: string, chapter: number };
+    onToggleVerseSelection: (verse: SelectedReadingPanelVerse, isShiftKey: boolean) => void;
     fontSize: number;
-    book: string;
-    chapter: number;
-    index: number;
-    selectedVerses: Set<SelectedVerse>;
-    checkVerseIsInArray: (arr: SelectedVerse[], verse: SelectedVerse) => boolean;
-    getBookChapterArray: (refs: SelectedVerse[]) => string[];
-    colorScheme: {
-        bgColor: string;
-        borderColor: string;
-        textColor: string;
-        hoverColor: string;
-    };
+    isSelected: boolean;
+    
 }
 
 const Scriptures = memo(({ 
-        number, text, onClick, fontSize, 
-        book, chapter, index, selectedVerses, 
-        checkVerseIsInArray,
-        getBookChapterArray,
-        colorScheme
+        number, 
+        text, 
+        ref,
+        onToggleVerseSelection, 
+        fontSize, 
+        isSelected,
     }: ScripturesProps) => {
 
-    const selectedVerse = useMemo(() => ({ book, chapter, verse: number }), [book, chapter, number]);
-    
-    const isSelected = useMemo(() => {
-        return checkVerseIsInArray(Array.from(selectedVerses), selectedVerse);
-    }, [selectedVerses, selectedVerse, checkVerseIsInArray]);
-    
-    const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        onClick(selectedVerse, e.shiftKey);
-    }, [onClick, selectedVerse]);
+    //todo: do this in the hook
+    const colorScheme = useMemo(() => {
+        return getPassageColorScheme(number);
+    }, [number]);
+
+    const handleToggleVerseSelection = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        onToggleVerseSelection({ book: ref.book, chapter: ref.chapter, verse: number }, e.shiftKey);
+    }, [onToggleVerseSelection, ref.book, ref.chapter, number]);
 
     return (
         <div
             key={number}
-            onClick={handleClick}
+            onClick={handleToggleVerseSelection}
             className={`group cursor-pointer p-3 my-3 rounded-lg transition-all duration-200 border-2 ${
                 isSelected ? 'shadow-sm scale-[1.00]' : 'border-transparent hover:bg-muted/50 hover:border-border/30'
             }`}

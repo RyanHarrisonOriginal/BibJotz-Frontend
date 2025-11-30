@@ -4,17 +4,16 @@ import { useBibleTranslations } from "@/features/bible/hooks/useBibleApi";
 
 export function useTranslations() {
   const { data: bibleTranslations } = useBibleTranslations();
-  const [translations, setTranslations] = useState<BibleTranslation[]>(bibleTranslations || []);
+  const [panelTranslations, setPanelTranslations] = useState<BibleTranslation[]>(bibleTranslations || []);
 
   useEffect(() => {
     if (bibleTranslations) {
-      setTranslations(bibleTranslations);
+      setPanelTranslations(bibleTranslations);
     }
   }, [bibleTranslations]);
 
   return {
-    translations,
-    bibleTranslations,
+    panelTranslations,
   };
 }
 

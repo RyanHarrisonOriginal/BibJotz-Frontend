@@ -1,33 +1,33 @@
 import { Button } from "@/components/ui/button"
 import { Plus, Minus, Type } from "lucide-react"
-import { VersionPanel } from "@/features/bible/components/bible-reader/types"
+import { ReadingPanel } from "@/features/bible/components/bible-reader/types"
+import { useFontSize } from "@/features/bible/components/bible-reader/hooks/useFontSize";
 
 interface BibleReaderControlsProps {
-    panels: VersionPanel[];
-    addPanel: () => void;
-    fontSize: number;
-    increaseFontSize: () => void;
-    decreaseFontSize: () => void;
+    activePanelCount: number;
+    addPanel: (panel: Omit<ReadingPanel, 'id'>) => void;
 }
 
-export function BibleReaderControls({ 
-    panels, addPanel, fontSize, increaseFontSize, decreaseFontSize 
+export function BibleReaderControls({
+    activePanelCount, addPanel
 }: BibleReaderControlsProps) {
+    const { fontSize, increaseFontSize, decreaseFontSize } = useFontSize();
+    const defaultPanel: Omit<ReadingPanel, 'id'> = { version: "BSB", book: { name: "GEN", numberOfChapters: 50 }, chapter: 1, verses: [] };
     return (
         <div className="px-6 py-4 border-b border-border/50 bg-muted/20 flex items-center justify-between">
             <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-muted-foreground">
-                    Viewing {panels.length} version{panels.length > 1 ? 's' : ''}
+                    Viewing {activePanelCount} version{activePanelCount > 1 ? 's' : ''}
                 </span>
-                {panels.length < 3 && (
+                {activePanelCount < 6 && (
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={addPanel}
+                        onClick={() => addPanel(defaultPanel)}
                         className="gap-2 hover:bg-primary/10 hover:border-primary/30 transition-all"
                     >
                         <Plus className="h-3.5 w-3.5" />
-                        Add Version
+                        Add Panel
                     </Button>
                 )}
                 <div className="flex items-center gap-2 ml-4 pl-4 border-l border-border/50">

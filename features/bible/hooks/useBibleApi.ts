@@ -49,9 +49,9 @@ export function useVerseText(
   });
 }
 
-export function useBibleTranslations() {
+export function useBibleVersions() {
   return useQuery({
-    queryKey: ['bibleTranslations'],
-    queryFn: () => TranslationApiService.fetchBibleTranslations(),
-  });
-}
+    queryKey: ['bibleVersions'],
+      queryFn: () => TranslationApiService.fetchBibleTranslations(),
+    });
+  }

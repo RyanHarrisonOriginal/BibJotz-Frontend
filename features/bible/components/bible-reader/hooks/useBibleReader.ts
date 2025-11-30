@@ -1,23 +1,18 @@
 import { useCallback } from "react";
-import { usePanels } from "./usePanels";
+import { usePanels } from "./useReadingPanel";
 import { useVerseSelection } from "./useVerseSelection";
-import { useReferenceFormatting } from "./useReferenceFormatting";
+import { useReferenceFormatting } from "./useVersSelectionDisplay";
 import { useFontSize } from "./useFontSize";
 import { usePanelData } from "./usePanelData";
 import { useTranslations } from "./useTranslations";
-import { SelectedVerse } from "@/features/bible/types";
 
 export function useBibleReader() {
-  const { translations, bibleTranslations } = useTranslations();
-  const { panels, addPanel, removePanel, updatePanel } = usePanels(bibleTranslations);
-  const { selectedVerses, rangeStart, handleVerseClick, clearSelection, verseIsInArray, setSelectedVerses } = useVerseSelection();
+  const { selectedTranslations, bibleTranslations } = useTranslations();
+  const { panels } = usePanels(bibleTranslations);
+  const { verseSelection } = useVerseSelection();
   const { fontSize, increaseFontSize, decreaseFontSize } = useFontSize();
-  const { panelBooks, panelVersesText } = usePanelData(panels, bibleTranslations);
-  const { getSelectedReference: getSelectedReferenceInternal, getSelectedReferenceObjects, bookChapterMap, getBookChapterArray } = useReferenceFormatting();
-
-  const getSelectedReference = useCallback(() => {
-    return getSelectedReferenceInternal(selectedVerses);
-  }, [selectedVerses, getSelectedReferenceInternal]);
+  const { panelBooks, panelVersesText } = usePanelData(panels.data, bibleTranslations);
+  const { biblicalReferenceFormatting } = useReferenceFormatting();
 
   const removeReference = useCallback((referenceString: string) => {
     // Parse reference string like "GEN 1:1-5" or "GEN 1:1, 3-5"
@@ -42,49 +37,39 @@ export function useBibleReader() {
     });
 
     // Remove all matching verses from selectedVerses
-    setSelectedVerses(prevSelected => {
+    verseSelection.setSelectedVerses(prevSelected => {
       const newSelected = new Set(prevSelected);
       verseNumbers.forEach(verse => {
         newSelected.delete({ book, chapter, verse });
       });
       return newSelected;
     });
-  }, [setSelectedVerses]);
+  }, [verseSelection.setSelectedVerses]);
 
   const handleAddToGuide = useCallback(() => {
-    if (selectedVerses.size === 0 || !panels[0]?.book) return;
+    if (verseSelection.selectedVerses.size === 0 || !panels.data[0]?.book) return;
 
-    const verses = Array.from(selectedVerses).sort((a, b) => a.verse - b.verse);
+    const verses = Array.from(verseSelection.selectedVerses).sort((a, b) => a.verse - b.verse);
     const reference = {
-      book: panels[0].book,
-      chapter: parseInt(panels[0].chapter),
+      book: panels.data[0].book,
+      chapter: parseInt(panels.data[0].chapter),
       startVerse: verses[0].verse,
       endVerse: verses[verses.length - 1].verse,
     };
     // TODO: Handle adding reference to guide
-    clearSelection();
-  }, [panels, selectedVerses, clearSelection]);
+    verseSelection.clearSelection();
+  }, [panels, verseSelection.selectedVerses, verseSelection.clearSelection]);
 
   return {
     panels,
-    selectedVerses,
-    rangeStart,
-    translations,
+    verseSelection,
+    selectedTranslations,
     fontSize,
     panelBooks,
     panelVersesText,
-    addPanel,
-    removePanel,
-    updatePanel,
-    handleVerseClick,
-    clearSelection,
-    getSelectedReference,
     removeReference,
-    getSelectedReferenceObjects,
     increaseFontSize,
     decreaseFontSize,
-    verseIsInArray,
-    bookChapterMap,
-    getBookChapterArray,
+    biblicalReferenceFormatting,
   };
 }
