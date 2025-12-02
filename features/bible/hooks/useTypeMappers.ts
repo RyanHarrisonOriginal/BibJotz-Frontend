@@ -1,5 +1,5 @@
 import { SelectedReadingPanelVerse, SelectedReadingPanelVerses } from "../components/bible-reader/types";
-import { BiblicalReference } from "@/features/guide/creation-form/components/BiblicalReferenceList";
+import { BiblicalReference } from "@/features/guide/creation-form/components/BiblicalReference/BiblicalReferenceList";
 
 
 export function useTypeMappers() {

@@ -1,10 +1,10 @@
 import { ScrollArea } from "@/components/ui/ScrollArea/scroll-area"
 import { memo } from "react";
-import { ReadingPanelVerse } from "../types";
-import Scriptures from "./Scripures";
-import { ScripturePanelSkeleton } from "./ScripturePanelSkeleton";
-import { ReadingPanel } from "../types";
-import { useVerseSelectionContext } from "../context/VerseSelectionProvider";
+import { ReadingPanelVerse } from "../../types";
+import Scriptures from "./ScripturePanel/Scripures";
+import { ScripturePanelSkeleton } from "./ScripturePanel/ScripturePanelSkeleton";
+import { ReadingPanel } from "../../types";
+import { useVerseSelectionContext } from "../../context/VerseSelectionProvider";
 
 interface ReadingPannelContentProps {
     panel: ReadingPanel;

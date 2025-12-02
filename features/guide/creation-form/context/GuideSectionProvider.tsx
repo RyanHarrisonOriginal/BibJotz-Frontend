@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useState } from "react";
 import { GuideSection } from "../components/GuideSections";
-import { BiblicalReference } from "../components/BiblicalReferenceList";
+import { BiblicalReference } from "../components/BiblicalReference/BiblicalReferenceList";
 
 const GuideSectionContext = createContext<GuideSectionContextType | undefined>(undefined);
 

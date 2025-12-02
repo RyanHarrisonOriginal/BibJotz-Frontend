@@ -3,8 +3,8 @@
 import { BiblicalReferenceList, type BiblicalReference } from './BiblicalReferenceList';
 import { BibleReaderModal } from '@/features/bible/components/bible-reader/components/BibleReaderModal';
 import * as React from 'react';
-import { GuideBiblicalReferenceHeader } from './GuideBiblicalReferenceHeader';
-import { EmptyBiblicalReferenceCard } from '@/features/guide/creation-form/components/EmptyBiblicalReferenceCard';
+import { GuideBiblicalReferenceHeader } from '../GuideBiblicalReferenceHeader';
+import { EmptyBiblicalReferenceCard } from '@/features/guide/creation-form/components/BiblicalReference/EmptyBiblicalReferenceCard';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useCallback } from 'react';

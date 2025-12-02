@@ -3,7 +3,7 @@ import { ReadingPanel, ReadingPanelVerse, SelectedReadingPanelVerse } from "@/fe
 import { TranslationSelect, BookSelect, ChapterSelect, DeletePanelButton } from "./ReadingPanelControls";
 import { useCallback } from "react";
 import { useBibleVersions, useBooks } from "@/features/bible/hooks/useBibleApi";
-import { useReadingPanel } from "../hooks/useReadingPanel";
+import { useReadingPanel } from "../../hooks/useReadingPanel";
 import { ReadingPannelContent } from "./ReadingPannelContent";
 
 interface ReadingPannelProps {

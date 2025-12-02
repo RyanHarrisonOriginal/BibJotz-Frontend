@@ -1,7 +1,7 @@
 // hooks/useReferenceList.ts
 
 import { useGuideBiblicalReferencesLists } from "../context/GuideBiblicalReferencesListsProvider";
-import { BiblicalReference } from "../components/BiblicalReferenceList";
+import { BiblicalReference } from "../components/BiblicalReference/BiblicalReferenceList";
 
 export function useGuideBiblicalReferenceList(key: string) {
   const { biblicalReferencesLists } = useGuideBiblicalReferencesLists();

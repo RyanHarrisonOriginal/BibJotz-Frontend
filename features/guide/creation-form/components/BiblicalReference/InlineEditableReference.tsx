@@ -2,11 +2,11 @@
 
 import * as React from 'react';
 import { BookAutocomplete } from '@/features/bible/components/book-autocomplete';
-import { ChapterDropdown } from './ChapterDropdown';
-import { VerseDropdown } from './VerseDropdown';
+import { ChapterDropdown } from './Inputs/ChapterDropdown';
+import { VerseDropdown } from './Inputs/VerseDropdown';
 import { Button } from '@/components/ui/button';
 import { Trash2, BookOpen, Edit2 } from 'lucide-react';
-import { type BiblicalReference } from './BiblicalReferenceList';
+import { type BiblicalReference } from './BiblicalReference/BiblicalReferenceList';
 import { cn } from '@/lib/utils';
 
 interface InlineEditableReferenceProps {

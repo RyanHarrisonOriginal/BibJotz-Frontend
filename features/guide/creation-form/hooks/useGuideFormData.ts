@@ -1,7 +1,7 @@
 import { useGuideMetaData } from "../context/GuideMetaDataProvider";
 import { useGuideSection } from "../context/GuideSectionProvider"
 import { useGuideBiblicalReferencesLists } from "../context/GuideBiblicalReferencesListsProvider";
-import { BiblicalReference } from "../components/BiblicalReferenceList";
+import { BiblicalReference } from "../components/BiblicalReference/BiblicalReferenceList";
 import { GuideSection } from "../components/GuideSections";
 import { useCallback } from "react";
 

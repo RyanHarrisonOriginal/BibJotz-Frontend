@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 import { type GuideSection } from '../components/GuideSections';
-import { type BiblicalReference } from '../components/BiblicalReferenceList';
+import { type BiblicalReference } from '../components/BiblicalReference/BiblicalReferenceList';
 import { SelectedVerse } from '@/features/bible/types';
 
 // Re-export for convenience
-export type { BiblicalReference } from '../components/BiblicalReferenceList';
+export type { BiblicalReference } from '../components/BiblicalReference/BiblicalReferenceList';
 
 export type CreateGuideFormData = {
   name: string;

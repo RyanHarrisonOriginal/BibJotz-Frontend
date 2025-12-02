@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { badgeColorSchemes } from "../components/ScriptureSelectionBadgeColors";
+import { badgeColorSchemes } from "../components/ReadingPanel/ScripturePanel/ScriptureSelectionBadgeColors";
 import { SelectedReadingPanelVerses, SelectedReadingPanelVerseGrouped } from "../types";
 
 export function useVersSelectionDisplay(selectedVerses: SelectedReadingPanelVerses) {

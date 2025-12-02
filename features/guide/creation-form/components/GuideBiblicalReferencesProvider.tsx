@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { BiblicalReference } from "./BiblicalReferenceList";
+import { BiblicalReference } from "./BiblicalReference/BiblicalReferenceList";
 
 const GuideBiblicalReferencesContext = createContext<GuideBiblicalReferencesContextType | undefined>(undefined);
 

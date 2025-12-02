@@ -1,8 +1,8 @@
 'use client';
 
-import { ReadingPannel } from "@/features/bible/components/bible-reader/components/ReadingPannel";
+import { ReadingPannel } from "@/features/bible/components/bible-reader/components/ReadingPanel/ReadingPannel";
 import { BibleReaderControls } from "@/features/bible/components/bible-reader/components/BibleReaderControls";
-import { ScriptureSelectionPanel } from "@/features/bible/components/bible-reader/components/ScriptureSelectionPanel";
+import { ScriptureSelectionPanel } from "@/features/bible/components/bible-reader/components/ReadingPanel/ScripturePanel/ScriptureSelectionPanel";
 import { useEffect, useState } from "react";
 import { SelectedVerse } from "@/features/bible/types";
 import { ReadingPanelVerse, ReadingPanel, ReadingPanelActions, SelectedReadingPanelVerses, SelectedReadingPanelVerse } from "@/features/bible/components/bible-reader/types";

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/Card/card';
 import { Separator } from '@/components/ui/separator';
 import { Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
-import { BiblicalReferenceList, type BiblicalReference } from './BiblicalReferenceList';
+import { BiblicalReferenceList, type BiblicalReference } from './BiblicalReference/BiblicalReferenceList';
 
 export type GuideSection = {
   title: string;

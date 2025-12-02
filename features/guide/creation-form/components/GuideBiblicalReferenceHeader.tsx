@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { BookOpen } from "lucide-react"
 import { Plus } from "lucide-react"
-import { BiblicalReference } from "./BiblicalReferenceList";
+import { BiblicalReference } from "./BiblicalReference/BiblicalReferenceList";
 
 
 type GuideBiblicalReferenceHeaderProps = {

@@ -1,4 +1,4 @@
-import { NumberDropdown } from './NumberDropdown';
+import { NumberDropdown } from './BiblicalReference/NumberDropdown';
 import { useBookInfo } from '@/features/bible/hooks/useBibleApi';
 import { BookInfo } from '@/features/bible/types';
 

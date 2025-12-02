@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState, useEffect } from "react";
-import { SelectedReadingPanelVerse } from "../types";
+import { SelectedReadingPanelVerse } from "../../../types";
 import { getPassageColorScheme } from "@/features/bible/utils/passageColorSchemes";
-import { useVerseSelectionContext } from "../context/VerseSelectionProvider";
+import { useVerseSelectionContext } from "../../../context/VerseSelectionProvider";
 
 
 interface ScripturesProps {
@@ -21,11 +21,6 @@ const Scriptures = memo(({
         onToggleVerseSelection, 
         fontSize, 
     }: ScripturesProps) => {
-
-    //todo: do this in the hook
-    const colorScheme = useMemo(() => {
-        return getPassageColorScheme(number);
-    }, [number]);
 
     const { selectors, version } = useVerseSelectionContext();
     

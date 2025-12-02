@@ -2,8 +2,8 @@ import { ScrollArea } from "@/components/ui/ScrollArea/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Trash2, Menu } from "lucide-react";
 import { memo } from "react";
-import { useVerseSelectionContext } from "../context/VerseSelectionProvider";
-import { useVersSelectionDisplay } from "../hooks/useVersSelectionDisplay";
+import { useVerseSelectionContext } from "../../../context/VerseSelectionProvider";
+import { useVersSelectionDisplay } from "../../../hooks/useVersSelectionDisplay";
 
 
 
