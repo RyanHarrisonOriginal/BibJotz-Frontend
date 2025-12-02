@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useCallback } from 'react';
 import { SelectedReadingPanelVerses } from '@/features/bible/components/bible-reader/types';
+import { useTypeMappers } from '@/features/bible/hooks/useTypeMappers';
 
 type GuideBiblicalReferenceProps = {
   biblicalReferences: BiblicalReference[];
@@ -40,14 +41,10 @@ export function GuideBiblicalReference({
 }: GuideBiblicalReferenceProps) {
 
   const [bibleReaderOpen, setBibleReaderOpen] = React.useState<boolean>(false);
-
+  const { mapSelectedReadingPanelVersesToBiblicalReferences } = useTypeMappers();
   const handleActionButtonCallback = useCallback((verses: SelectedReadingPanelVerses) => {
-    addBiblicalReferences(verses.map((verse): BiblicalReference => ({
-      book: verse.book,
-      chapter: verse.chapter,
-      startVerse: verse.verse,
-      endVerse: verse.verse,
-    })))
+    const biblicalReferences = mapSelectedReadingPanelVersesToBiblicalReferences(verses);
+    addBiblicalReferences(biblicalReferences);
     setBibleReaderOpen(false)
   }, [addBiblicalReferences]);
 

@@ -1,84 +1,105 @@
-import { useState, useCallback } from "react";
-import { SelectedVerse } from "@/features/bible/types";
-import { ReadingPanelVerse, SelectedReadingPanelVerse, SelectedReadingPanelVerses } from "@/features/bible/components/bible-reader/types";
+import { useCallback, useState, useMemo, useRef } from "react";
+import { SelectedReadingPanelVerse } from "@/features/bible/components/bible-reader/types";
 
 export function useVerseSelection() {
 
-  const [selectedVerses, setSelectedVerses] = useState<SelectedReadingPanelVerses>([]);
-  const [selectedVersesKeys, setSelectedVersesKeys] = useState<Set<string>>(new Set());
-  const [selectedChaptersKeys, setSelectedChaptersKeys] = useState<Set<string>>(new Set());
-  const [selectionRangeStart, setSelectionRangeStart] = useState<SelectedReadingPanelVerse | null>(null);
+  const [selectedMap, setSelectedMap] = useState<Map<string, SelectedReadingPanelVerse>>(() => new Map());
+  const [rangeStart, setRangeStart] = useState<SelectedReadingPanelVerse | null>(null);
 
-  const verseKey = useCallback(( selectedVerse: SelectedReadingPanelVerse ): string => {
-    return `${selectedVerse.book}:${selectedVerse.chapter}:${selectedVerse.verse}`;
+  const selectedMapRef = useRef<Map<string, SelectedReadingPanelVerse>>(selectedMap);
+
+  selectedMapRef.current = selectedMap;
+  const [version, setVersion] = useState(0);
+
+  const verseKey = useCallback((v: SelectedReadingPanelVerse) => {
+    return `${v.book}:${v.chapter}:${v.verse}`;
   }, []);
 
-  const chapterKey = useCallback(( selectedVerse: SelectedReadingPanelVerse ): string => {
-    return `${selectedVerse.book}:${selectedVerse.chapter}`;
-  }, []);
+  const isSelected = useCallback((v: SelectedReadingPanelVerse) => {
+    return selectedMapRef.current.has(verseKey(v));
+  }, [verseKey]);
 
-  const isVerseSelected = useCallback((selectedVerse: SelectedReadingPanelVerse): boolean => {
-    return selectedVersesKeys.has(verseKey(selectedVerse));
-  }, []);
+  const toggleVerse = useCallback((v: SelectedReadingPanelVerse, isShift: boolean) => {
+    const key = verseKey(v);
 
-  const remove = useCallback((selectedVerse: SelectedReadingPanelVerse) => {
-    setSelectedVersesKeys(prevKeys => {
-      const newKeys = new Set(prevKeys);
-      newKeys.delete(verseKey(selectedVerse));
-      return newKeys;
-    });
-  }, []);
+    setSelectedMap(prev => {
+      const next = new Map(prev);
 
-  const add = useCallback((selectedVerse: SelectedReadingPanelVerse) => {
-    setSelectedVersesKeys(prevKeys => {
-      const newKeys = new Set(prevKeys);
-      newKeys.add(verseKey(selectedVerse));
-      return newKeys;
-    });
-  }, []);
+      // RANGE MODE
+      if (isShift && rangeStart) {
+        const start = Math.min(rangeStart.verse, v.verse);
+        const end = Math.max(rangeStart.verse, v.verse);
 
-  const toggleVerseSelection = useCallback((selectedVerse: SelectedReadingPanelVerse, isShiftKey: boolean) => {
-    setSelectedVerses(prevSelected => {
-      let newSelected = [...prevSelected];
-
-      if (isShiftKey && selectionRangeStart !== null) {
-        // Range selection
-        const start = Math.min(selectionRangeStart.verse, selectedVerse.verse);
-        const end = Math.max(selectionRangeStart.verse, selectedVerse.verse);
         for (let i = start; i <= end; i++) {
-          newSelected.push({ book: selectedVerse.book, chapter: selectedVerse.chapter, verse: i });
+          const verseObj = { book: v.book, chapter: v.chapter, verse: i };
+          next.set(`${v.book}:${v.chapter}:${i}`, verseObj);
         }
-        setSelectionRangeStart(null);
-      } else {
-        // Single selection or start of range
-        if (isVerseSelected(selectedVerse)) {
-          newSelected = newSelected.filter(verse => verse.book !== selectedVerse.book || verse.chapter !== selectedVerse.chapter || verse.verse !== selectedVerse.verse);
-          setSelectionRangeStart(null);
-        } else {
-          newSelected.push(selectedVerse);
-          setSelectionRangeStart(selectedVerse);
-        }
-      }
-      return newSelected;
-    });
-  }, [selectionRangeStart]);
 
-  const clearSelection = useCallback(() => {
-    setSelectedVerses([]);
-    setSelectedVersesKeys(new Set());
-    setSelectionRangeStart(null);
+        setRangeStart(null);
+        // Update ref synchronously before state update completes
+        selectedMapRef.current = next;
+        setVersion(prev => prev + 1);
+        return next;
+      }
+
+      // NORMAL CLICK
+      if (next.has(key)) {
+        next.delete(key);
+        setRangeStart(null);
+      } else {
+        next.set(key, v);
+        setRangeStart(v);
+      }
+
+      // Update ref synchronously before state update completes
+      selectedMapRef.current = next;
+      setVersion(prev => prev + 1);
+      return next;
+    });
+  }, [rangeStart, verseKey]);
+
+  const clear = useCallback(() => {
+    const emptyMap = new Map();
+    selectedMapRef.current = emptyMap;
+    setSelectedMap(emptyMap);
+    setRangeStart(null);
+    setVersion(prev => prev + 1);
   }, []);
+
+  const selectedArray = useMemo(() => {
+    return Array.from(selectedMap.values());
+  }, [selectedMap]);
+
+  const remove = useCallback((v: SelectedReadingPanelVerse) => {
+    setSelectedMap(prev => {
+      const next = new Map(prev);
+      next.delete(verseKey(v));
+      // Update ref synchronously before state update completes
+      selectedMapRef.current = next;
+      setVersion(prev => prev + 1);
+      return next;
+    });
+  }, [verseKey]);
+
+  // Memoize selectors object to keep reference stable
+  const selectors = useMemo(() => ({
+    isVerseSelected: isSelected,
+  }), [isSelected]);
+
+  // Memoize actions object to keep reference stable
+  const actions = useMemo(() => ({
+    toggleVerse,
+    clear,
+    remove,
+  }), [toggleVerse, clear, remove]);
 
   return {
     verseSelection: {
-      selectedVerses,
-      selectionRangeStart,
-      toggleVerseSelection,
-      clearSelection,
-      remove,
-      add,
+      data: selectedArray,
+      meta: { rangeStart },
+      actions,
     },
-    isVerseSelected,
+    selectors,
+    version, // Expose version for optimization
   };
 }
-

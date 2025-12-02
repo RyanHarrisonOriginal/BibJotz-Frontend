@@ -7,12 +7,11 @@ import { useEffect, useState } from "react";
 import { SelectedVerse } from "@/features/bible/types";
 import { ReadingPanelVerse, ReadingPanel, ReadingPanelActions, SelectedReadingPanelVerses, SelectedReadingPanelVerse } from "@/features/bible/components/bible-reader/types";
 import { useReadingPanels } from "@/features/bible/components/bible-reader/hooks/useReadingPanels";
-import { useVerseSelection } from "@/features/bible/components/bible-reader/hooks/useVerseSelection";
 import { useFontSize } from "@/features/bible/components/bible-reader/hooks/useFontSize";
+import { useVerseSelectionContext } from "../context/VerseSelectionProvider";
 
 interface BibleReaderProps {
   onOpenChange: (open: boolean) => void;
-  selectCallback?: (verse: SelectedReadingPanelVerse) => void;
   actionButtonCallback?: (verses: SelectedReadingPanelVerses) => void;
   ActionButtonComponent?: React.ComponentType<{
     onClick: () => void;
@@ -22,16 +21,15 @@ interface BibleReaderProps {
 
 export function BibleReader({
   onOpenChange,
-  selectCallback = () => { },
   actionButtonCallback = () => { },
   ActionButtonComponent }: BibleReaderProps) {
 
   const { panels } = useReadingPanels();
-  const { verseSelection } = useVerseSelection();
+  const { verseSelection } = useVerseSelectionContext();
   const { fontSize } = useFontSize();
 
+
   const [mounted, setMounted] = useState(false);
-  console.log(panels)
 
   useEffect(() => {
     setMounted(true);
@@ -42,13 +40,8 @@ export function BibleReader({
     return null;
   }
 
-  const handleToggleVerseSelection = (verse: SelectedReadingPanelVerse, isShiftKey: boolean) => {
-    verseSelection.toggleVerseSelection(verse, isShiftKey);
-    selectCallback(verse);
-  }
-
   const handleActionButton = () => {
-    actionButtonCallback(verseSelection.selectedVerses);
+    actionButtonCallback(verseSelection.data);
     onOpenChange(false);
   }
 
@@ -77,7 +70,6 @@ export function BibleReader({
               index={index}
               onChange={panels.actions.update}
               onDelete={panels.actions.remove}
-              onToggleVerseSelection={handleToggleVerseSelection}
               fontSize={fontSize}
             />
           ))}

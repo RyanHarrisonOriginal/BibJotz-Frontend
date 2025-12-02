@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useEffect, useState } from "react";
 import { BibleReader } from "./BibleReader";
 import { SelectedReadingPanelVerse, SelectedReadingPanelVerses } from "../types";
+import { VerseSelectionProvider } from "../context/VerseSelectionProvider";
 
 type ActionButtonComponentProps = {
     onClick: () => void;
@@ -31,7 +32,7 @@ export function BibleReaderModal({
         setMounted(true);
     }, []);
 
-    
+
     if (!mounted) {
         return null;
     }
@@ -44,12 +45,13 @@ export function BibleReaderModal({
                     <DialogTitle className="text-2xl font-serif text-primary">Bible Reader</DialogTitle>
                     <p className="text-sm text-muted-foreground mt-1">Select verses to add to your guide</p>
                 </DialogHeader>
-
-                <BibleReader 
-                   onOpenChange={onOpenChange} 
-                   selectCallback={verseSelectionCallback} 
-                   actionButtonCallback={actionButtonCallback} 
-                   ActionButtonComponent={ActionButtonComponent} />
+                <VerseSelectionProvider>
+                    <BibleReader
+                        onOpenChange={onOpenChange}
+                        selectCallback={verseSelectionCallback}
+                        actionButtonCallback={actionButtonCallback}
+                        ActionButtonComponent={ActionButtonComponent} />
+                </VerseSelectionProvider>
             </DialogContent>
         </Dialog>
     );
