@@ -9,6 +9,7 @@ import { VerseSelectionProvider } from "../context/VerseSelectionProvider";
 type ActionButtonComponentProps = {
     onClick: () => void;
     color?: string;
+    text: string;
 }
 
 interface BibleReaderModalProps {
@@ -17,14 +18,15 @@ interface BibleReaderModalProps {
     verseSelectionCallback?: (verse: SelectedReadingPanelVerse) => void;
     actionButtonCallback?: (verses: SelectedReadingPanelVerses) => void;
     ActionButtonComponent?: React.ComponentType<ActionButtonComponentProps>;
+    actionButtonText: string;
 }
 
 export function BibleReaderModal({
     open,
     onOpenChange,
-    verseSelectionCallback = () => { },
+    actionButtonText,
     actionButtonCallback = () => { },
-    ActionButtonComponent }: BibleReaderModalProps) {
+     }: BibleReaderModalProps) {
     // Only mount on client to avoid hydration issues
     const [mounted, setMounted] = useState(false);
 
@@ -48,9 +50,9 @@ export function BibleReaderModal({
                 <VerseSelectionProvider>
                     <BibleReader
                         onOpenChange={onOpenChange}
-                        selectCallback={verseSelectionCallback}
+                        actionButtonText={actionButtonText}
                         actionButtonCallback={actionButtonCallback}
-                        ActionButtonComponent={ActionButtonComponent} />
+                    />
                 </VerseSelectionProvider>
             </DialogContent>
         </Dialog>

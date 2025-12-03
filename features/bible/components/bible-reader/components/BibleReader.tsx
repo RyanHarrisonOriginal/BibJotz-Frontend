@@ -9,20 +9,20 @@ import { ReadingPanelVerse, ReadingPanel, ReadingPanelActions, SelectedReadingPa
 import { useReadingPanels } from "@/features/bible/components/bible-reader/hooks/useReadingPanels";
 import { useFontSize } from "@/features/bible/components/bible-reader/hooks/useFontSize";
 import { useVerseSelectionContext } from "../context/VerseSelectionProvider";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 interface BibleReaderProps {
   onOpenChange: (open: boolean) => void;
   actionButtonCallback?: (verses: SelectedReadingPanelVerses) => void;
-  ActionButtonComponent?: React.ComponentType<{
-    onClick: () => void;
-    color?: string;
-  }>;
+  actionButtonText: string;
 }
 
 export function BibleReader({
   onOpenChange,
+  actionButtonText,
   actionButtonCallback = () => { },
-  ActionButtonComponent }: BibleReaderProps) {
+   }: BibleReaderProps) {
 
   const { panels } = useReadingPanels();
   const { verseSelection } = useVerseSelectionContext();
@@ -82,10 +82,17 @@ export function BibleReader({
           💡 Click verses to select • Hold Shift and click to select a range
         </p>
 
-        {ActionButtonComponent &&
-          <ActionButtonComponent
+        {handleActionButton &&
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
             onClick={handleActionButton}
-            color="primary" />}
+            className="gap-2 shadow-lg hover:shadow-xl transition-all hover:scale-105">
+            <Plus className="h-4 w-4" />
+            {actionButtonText || "Action Button"}
+          </Button>
+        }
 
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { CreateGuideHeader } from "@/features/guide/creation-form/components/CreateGuideHeader";
 import { TitleSectionInput } from "@/features/guide/creation-form/components/TitleSectionInput";
-import { GuideBiblicalReference } from "@/features/guide/creation-form/components/BiblicalReference/GuideBiblicalReference";
+import { GuideBiblicalReference } from "@/features/guide/creation-form/components/GuideBiblicalReference";
 import { GuideSections } from "@/features/guide/creation-form/components/GuideSections";
 
 import { useGuideMetaData } from "@/features/guide/creation-form/context/GuideMetaDataProvider";

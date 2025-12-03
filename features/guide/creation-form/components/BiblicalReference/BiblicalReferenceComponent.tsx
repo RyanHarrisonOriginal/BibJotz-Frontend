@@ -1,52 +1,52 @@
 'use client';
 
-import { BiblicalReferenceList, type BiblicalReference } from './BiblicalReferenceList';
+import { BiblicalReference } from '@/features/guide/creation-form/types/index';
 import { BibleReaderModal } from '@/features/bible/components/bible-reader/components/BibleReaderModal';
 import * as React from 'react';
-import { GuideBiblicalReferenceHeader } from '../GuideBiblicalReferenceHeader';
 import { EmptyBiblicalReferenceCard } from '@/features/guide/creation-form/components/BiblicalReference/EmptyBiblicalReferenceCard';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import { useCallback } from 'react';
 import { SelectedReadingPanelVerses } from '@/features/bible/components/bible-reader/types';
 import { useTypeMappers } from '@/features/bible/hooks/useTypeMappers';
+import { BiblicalReferenceHeader } from './BiblicalReferenceHeader';
+import { BiblicalReferenceList } from './BiblicalReferenceList';
 
-type GuideBiblicalReferenceProps = {
+type ActionButtonComponentProps = {
+  onClick: () => void;
+  color?: string;
+  text: string;
+}
+
+type BiblicalReferenceComponentProps = {
+  headerText: string;
+  descriptionText: string;
   biblicalReferences: BiblicalReference[];
   onAddReference: (reference: BiblicalReference) => void;
   onRemoveReference: (index: number) => void;
   onUpdateReference: (index: number, field: keyof BiblicalReference, value: string | number) => void;
-  addBiblicalReferences: (references: BiblicalReference[]) => void;
+  addBiblicalReferencesFromBibleReader: (references: BiblicalReference[]) => void;
+  actionButtonText: string;
 };
 
-const ActionButtonComponent = ({ onClick }: { onClick: () => void }) => {
-  return (
-    <Button
-      type="button"
-      onClick={onClick}
-      size="sm"
-      className="gap-2 shadow-lg hover:shadow-xl transition-all hover:scale-105">
-      <Plus className="h-4 w-4" />
-      Add to Guide
-    </Button>
-  )
-}
 
-export function GuideBiblicalReference({
+
+export function BiblicalReferenceComponent({
+  headerText,
+  descriptionText,
   biblicalReferences,
   onAddReference,
   onRemoveReference,
   onUpdateReference,
-  addBiblicalReferences,
-}: GuideBiblicalReferenceProps) {
+  addBiblicalReferencesFromBibleReader,
+  actionButtonText,
+}: BiblicalReferenceComponentProps) {
 
   const [bibleReaderOpen, setBibleReaderOpen] = React.useState<boolean>(false);
   const { mapSelectedReadingPanelVersesToBiblicalReferences } = useTypeMappers();
   const handleActionButtonCallback = useCallback((verses: SelectedReadingPanelVerses) => {
     const biblicalReferences = mapSelectedReadingPanelVersesToBiblicalReferences(verses);
-    addBiblicalReferences(biblicalReferences);
+    addBiblicalReferencesFromBibleReader(biblicalReferences);
     setBibleReaderOpen(false)
-  }, [addBiblicalReferences]);
+  }, [addBiblicalReferencesFromBibleReader]);
 
 
 
@@ -57,12 +57,15 @@ export function GuideBiblicalReference({
           open={bibleReaderOpen}
           onOpenChange={setBibleReaderOpen}
           actionButtonCallback={handleActionButtonCallback}
-          ActionButtonComponent={ActionButtonComponent}
+          actionButtonText={actionButtonText}
         />
       )}
-      <GuideBiblicalReferenceHeader
+      <BiblicalReferenceHeader
         openBibleReader={() => setBibleReaderOpen(true)}
-        onAddReference={onAddReference} />
+        onAddReference={onAddReference}
+        headerText={headerText}
+        descriptionText={descriptionText}
+      />
 
 
       <BiblicalReferenceList

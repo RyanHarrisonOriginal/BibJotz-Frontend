@@ -1,11 +1,8 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/Form/input';
 import { BookAutocomplete } from '@/features/bible/components/book-autocomplete';
-import { Card } from '@/components/ui/Card/card';
 import { Trash2, BookOpen } from 'lucide-react';
-import { NumberDropdown } from './Inputs/NumberDropdown';
 import { VerseDropdown } from './Inputs/VerseDropdown';
 import { useBooks } from '@/features/bible/hooks/useBibleApi';
 import { ChapterDropdown } from '@/features/guide/creation-form/components/BiblicalReference/Inputs/ChapterDropdown';
@@ -13,15 +10,8 @@ import { getPassageColorScheme } from '@/features/bible/utils/passageColorScheme
 import { InlineEditableReference } from '@/features/guide/creation-form/components/BiblicalReference/InlineEditableReference';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
+import { BiblicalReference } from '@/features/guide/creation-form/types';
 
-export type BiblicalReference = {
-  book: string;
-  bookCode?: string;
-  chapter: number;
-  startVerse: number;
-  endVerse: number;
-  NoReferenceComponent?: React.ReactNode;
-};
 
 type BiblicalReferenceListProps = {
   biblicalReferences: BiblicalReference[];

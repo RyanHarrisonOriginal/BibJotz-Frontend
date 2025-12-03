@@ -1,7 +1,7 @@
 'use client';
 
 import { BookChapterInfo } from '@/features/bible/types';
-import { NumberDropdown } from './NumberDropdown';
+import { NumberDropdown } from '@/features/guide/creation-form/components/BiblicalReference/Inputs/NumberDropdown';
 import { useBookChapterInfo, useVerses } from '@/features/bible/hooks/useBibleApi';
 
 type VerseDropdownProps = {

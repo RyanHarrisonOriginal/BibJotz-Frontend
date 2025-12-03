@@ -1,6 +1,6 @@
 // context/ReferenceListsProvider.tsx
 import { createContext, useContext, useState, useCallback } from "react";
-import { BiblicalReference } from "../components/BiblicalReference/BiblicalReferenceList";
+import { BiblicalReference } from "@/features/guide/creation-form/types";
 
 type GuideBiblicalReferencesListsStore = Record<string, BiblicalReference[]>;
 

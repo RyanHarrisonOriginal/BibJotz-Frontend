@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useState } from "react";
 import { GuideSection } from "../components/GuideSections";
-import { BiblicalReference } from "../components/BiblicalReference/BiblicalReferenceList";
+import { BiblicalReference } from "@/features/guide/creation-form/types";
 
 const GuideSectionContext = createContext<GuideSectionContextType | undefined>(undefined);
 
@@ -23,27 +23,19 @@ type GuideSectionContextType = {
 
 export function GuideSectionProvider({ children }: { children: React.ReactNode }) {
 
-    const [guideSections, setGuideSections] = useState<GuideSection[]>([
-        {
-            title: '',
-            description: '',
-            ordinalPosition: 1,
-            biblicalReferences: [{ book: '', chapter: 1, startVerse: 1, endVerse: 1 }],
-        },
-    ]);
+    const blankSection: GuideSection = {
+        title: '',
+        description: '',
+        ordinalPosition: 1,
+        biblicalReferences: [],
+    };
+
+    const [guideSections, setGuideSections] = useState<GuideSection[]>([blankSection]);
 
     const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
 
     const add = useCallback(() => {
-        setGuideSections((prev) => [
-            ...prev,
-            {
-                title: '',
-                description: '',
-                ordinalPosition: prev.length + 1,
-                biblicalReferences: [{ book: '', chapter: 1, startVerse: 1, endVerse: 1 }],
-            },
-        ]);
+        setGuideSections((prev) => [...prev, blankSection]);
     }, []);
 
     const remove = useCallback((index: number) => {

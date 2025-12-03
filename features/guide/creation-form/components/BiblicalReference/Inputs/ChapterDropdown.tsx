@@ -1,4 +1,4 @@
-import { NumberDropdown } from './BiblicalReference/NumberDropdown';
+import { NumberDropdown } from '@/features/guide/creation-form/components/BiblicalReference/Inputs/NumberDropdown';
 import { useBookInfo } from '@/features/bible/hooks/useBibleApi';
 import { BookInfo } from '@/features/bible/types';
 

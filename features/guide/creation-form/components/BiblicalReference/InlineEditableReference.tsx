@@ -6,8 +6,7 @@ import { ChapterDropdown } from './Inputs/ChapterDropdown';
 import { VerseDropdown } from './Inputs/VerseDropdown';
 import { Button } from '@/components/ui/button';
 import { Trash2, BookOpen, Edit2 } from 'lucide-react';
-import { type BiblicalReference } from './BiblicalReference/BiblicalReferenceList';
-import { cn } from '@/lib/utils';
+import { BiblicalReference } from '@/features/guide/creation-form/types';
 
 interface InlineEditableReferenceProps {
   reference: BiblicalReference;

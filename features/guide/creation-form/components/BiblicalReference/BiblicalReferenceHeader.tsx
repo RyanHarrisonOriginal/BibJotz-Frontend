@@ -1,21 +1,23 @@
 import { Button } from "@/components/ui/button"
 import { BookOpen } from "lucide-react"
 import { Plus } from "lucide-react"
-import { BiblicalReference } from "./BiblicalReference/BiblicalReferenceList";
+import { BiblicalReference } from "./BiblicalReferenceList";
 
 
-type GuideBiblicalReferenceHeaderProps = {
+type BiblicalReferenceHeaderProps = {
+    headerText: string;
+    descriptionText: string;
     openBibleReader: () => void;
     onAddReference: (reference: BiblicalReference) => void;
 }
 
-export function GuideBiblicalReferenceHeader({ openBibleReader, onAddReference }: GuideBiblicalReferenceHeaderProps) {
+export function BiblicalReferenceHeader({ headerText, descriptionText, openBibleReader, onAddReference }: BiblicalReferenceHeaderProps) {
     return (
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-serif font-semibold">Biblical Foundation</h2>
+          <h2 className="text-xl font-serif font-semibold">{headerText}</h2>
           <p className="text-sm text-muted-foreground">
-            Primary scripture references for this guide
+            {descriptionText}
           </p>
         </div>
         <div className="flex gap-2">
