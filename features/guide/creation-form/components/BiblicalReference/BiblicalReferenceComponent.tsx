@@ -42,6 +42,7 @@ export function BiblicalReferenceComponent({
 
   const [bibleReaderOpen, setBibleReaderOpen] = React.useState<boolean>(false);
   const { mapSelectedReadingPanelVersesToBiblicalReferences } = useTypeMappers();
+  
   const handleActionButtonCallback = useCallback((verses: SelectedReadingPanelVerses) => {
     const biblicalReferences = mapSelectedReadingPanelVersesToBiblicalReferences(verses);
     addBiblicalReferencesFromBibleReader(biblicalReferences);

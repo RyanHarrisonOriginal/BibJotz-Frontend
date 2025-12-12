@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { BiblicalReferenceComponent } from "./BiblicalReference/BiblicalReferenceComponent";
 import { Plus } from "lucide-react";
+import { useGuideBiblicalReferencesLists } from "../context/GuideBiblicalReferencesListsProvider";
 
 type GuideSectionCardProps = {
 
@@ -13,10 +14,6 @@ type GuideSectionCardProps = {
   sectionIndex: number;
   onUpdateSection: (index: number, field: 'title' | 'description', value: string) => void;
   onRemoveSection: (index: number) => void;
-  onAddSectionReference: (reference: BiblicalReference) => void;
-  onRemoveSectionReference: (index: number) => void;
-  onUpdateSectionReference: (index: number, field: keyof BiblicalReference, value: string | number) => void;
-  addBiblicalReferencesFromBibleReader: (references: BiblicalReference[]) => void;
 }
 
 
@@ -25,13 +22,14 @@ const GuideSectionCard = ({
     section, 
     sectionIndex, 
     onUpdateSection, 
-    onRemoveSection, 
-    onAddSectionReference, 
-    onRemoveSectionReference,
-    onUpdateSectionReference,
-    addBiblicalReferencesFromBibleReader
+    onRemoveSection
   }: GuideSectionCardProps) => {
+
+    const { biblicalReferencesLists } = useGuideBiblicalReferencesLists();
+    const sectionBiblicalReferences = biblicalReferencesLists.getList(`SECTION_${sectionIndex}`);
+    const addBiblicalReferencesFromBibleReader = biblicalReferencesLists.batchAdd.bind(null, `SECTION_${sectionIndex}`);
     return (
+
       <Card key={sectionIndex} className="p-6 hover:border-primary/50 transition-colors">
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-4">
@@ -72,7 +70,7 @@ const GuideSectionCard = ({
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() => onAddSectionReference({ book: 'GEN', chapter: 1, startVerse: 1, endVerse: 1 })}
+                      onClick={() => biblicalReferencesLists.add.bind(null, `SECTION_${sectionIndex}`)}
                     >
                       <Plus className="h-3 w-3" />
                     </Button>
@@ -81,10 +79,10 @@ const GuideSectionCard = ({
                   <BiblicalReferenceComponent
                     headerText="Biblical Foundation"
                     descriptionText="Primary scripture references for this section"
-                    biblicalReferences={section.biblicalReferences}
-                    onAddReference={onAddSectionReference}
-                    onRemoveReference={onRemoveSectionReference}
-                    onUpdateReference={onUpdateSectionReference}
+                    biblicalReferences={sectionBiblicalReferences}
+                    onAddReference={biblicalReferencesLists.add.bind(null, `SECTION_${sectionIndex}`)}
+                    onRemoveReference={biblicalReferencesLists.remove.bind(null, `SECTION_${sectionIndex}`)}
+                    onUpdateReference={biblicalReferencesLists.update.bind(null, `SECTION_${sectionIndex}`)}
                     addBiblicalReferencesFromBibleReader={addBiblicalReferencesFromBibleReader}
                     actionButtonText={`Add Reference to ${section.title || 'this section'}`}
                   />

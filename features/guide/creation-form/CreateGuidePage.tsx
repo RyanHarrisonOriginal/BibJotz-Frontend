@@ -52,14 +52,9 @@ export default function CreateGuidePage() {
     
               <GuideSections
                 guideSections={guideSections}
-                expandedSections={expandedSections}
                 onAddSection={guideSectionActions.add}
                 onRemoveSection={guideSectionActions.remove}
                 onUpdateSection={guideSectionActions.update}
-                onToggleSectionReferences={guideBiblicalReferenceActions.toggleReferences}
-                onAddSectionReference={guideBiblicalReferenceActions.addBiblicalReference}
-                onRemoveSectionReference={guideBiblicalReferenceActions.removeBiblicalReference}
-                onUpdateSectionReference={guideBiblicalReferenceActions.updateBiblicalReference}
               />
             </form>
           </div>

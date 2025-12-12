@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { BookOpen } from "lucide-react"
 import { Plus } from "lucide-react"
-import { BiblicalReference } from "./BiblicalReferenceList";
+import { BiblicalReference } from "@/features/guide/creation-form/types"
 
 
 type BiblicalReferenceHeaderProps = {
@@ -11,7 +11,11 @@ type BiblicalReferenceHeaderProps = {
     onAddReference: (reference: BiblicalReference) => void;
 }
 
-export function BiblicalReferenceHeader({ headerText, descriptionText, openBibleReader, onAddReference }: BiblicalReferenceHeaderProps) {
+export function BiblicalReferenceHeader({ 
+  headerText, 
+  descriptionText, 
+  openBibleReader, 
+  onAddReference }: BiblicalReferenceHeaderProps) {
     return (
       <div className="flex items-center justify-between">
         <div>

@@ -16,11 +16,7 @@ type GuideSectionsProps = {
   onAddSection: () => void;
   onRemoveSection: (index: number) => void;
   onUpdateSection: (index: number, field: 'title' | 'description', value: string) => void;
-  onToggleSectionReferences: (index: number) => void;
-  onAddSectionReference: (reference: BiblicalReference) => void;
-  onRemoveSectionReference: (index: number) => void;
-  onUpdateSectionReference: (index: number, field: keyof BiblicalReference, value: string | number) => void;
-  addBiblicalReferencesFromBibleReader: (references: BiblicalReference[]) => void;
+
 };
 
 
@@ -28,11 +24,7 @@ export function GuideSections({
   guideSections,
   onAddSection,
   onRemoveSection,
-  onUpdateSection,
-  onAddSectionReference,
-  onRemoveSectionReference,
-  onUpdateSectionReference,
-  addBiblicalReferencesFromBibleReader,
+  onUpdateSection
 }: GuideSectionsProps) {
   return (
     <div className="space-y-4">
@@ -50,10 +42,6 @@ export function GuideSections({
             sectionIndex={sectionIndex}
             onUpdateSection={onUpdateSection}
             onRemoveSection={onRemoveSection}
-            onAddSectionReference={onAddSectionReference}
-            onRemoveSectionReference={onRemoveSectionReference}
-            onUpdateSectionReference={onUpdateSectionReference}
-            addBiblicalReferencesFromBibleReader={addBiblicalReferencesFromBibleReader}
           />
         ))}
       </div>
