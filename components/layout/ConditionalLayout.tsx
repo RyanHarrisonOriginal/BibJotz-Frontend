@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { AppSideBar } from '@/components/layout/AppSideBar';
+import { AppSideBar } from '@/components/layout/AppSideBar/components/AppSideBar';
 import { AppHeader } from '@/components/layout/AppHeader';
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
