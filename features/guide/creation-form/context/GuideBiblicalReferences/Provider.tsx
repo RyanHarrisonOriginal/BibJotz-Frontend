@@ -1,5 +1,7 @@
-import { createContext, useContext, useState } from "react";
-import { BiblicalReference } from "@/features/guide/creation-form/types";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { BiblicalReference } from "@/features/guide/types";
+import { useGetDraft } from "@/features/guide/drafts/hooks/useDraftsApi";
+import { getDraftKey } from "@/features/guide/drafts/utility";
 
 const GuideBiblicalReferencesContext = createContext<GuideBiblicalReferencesContextType | undefined>(undefined);
 
@@ -7,6 +9,8 @@ type GuideBiblicalReferencesContextType = {
 }
 
 export function GuideBiblicalReferencesProvider({ children }: { children: React.ReactNode }) {
+
+
 
     const [biblicalReferences, setBiblicalReferences] = useState<BiblicalReference[]>([]);
 

@@ -3,20 +3,30 @@ import { TitleSectionInput } from "@/features/guide/creation-form/components/Tit
 import { GuideBiblicalReference } from "@/features/guide/creation-form/components/GuideBiblicalReference";
 import { GuideSections } from "@/features/guide/creation-form/components/GuideSections";
 
-import { useGuideMetaData } from "@/features/guide/creation-form/context/GuideMetaDataProvider";
-import { useGuideBiblicalReferencesLists } from "@/features/guide/creation-form/context/GuideBiblicalReferencesListsProvider";
-import { useGuideSection } from "@/features/guide/creation-form/context/GuideSectionProvider";
+import { useGuideMetaData } from "@/features/guide/creation-form/context/GuideMetaData/Provider";
+import { useGuideBiblicalReferencesLists } from "@/features/guide/creation-form/context/GuideBiblicalReferencesLists/Provider";
+import { useGuideSection } from "@/features/guide/creation-form/context/GuideSection/Provider";
 
 import { useGuideFormData } from "@/features/guide/creation-form/hooks/useGuideFormData";
 import { Separator } from "@/components/ui/separator";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { getDraftKey } from "@/features/guide/drafts/utility";
 
 export default function CreateGuidePage() {
+    const queryClient = useQueryClient();
+    
+    // Invalidate and refetch draft on mount to always get fresh data from DB
+    useEffect(() => {
+        const draftKey = getDraftKey('GUIDE');
+        queryClient.invalidateQueries({ queryKey: ['draft', draftKey] });
+    }, [queryClient]);
 
     const { name, description , isPublic, setIsPublic, updateName, updateDescription} = useGuideMetaData();
-    const { biblicalReferencesLists } = useGuideBiblicalReferencesLists();
-    const { guideSections, expandedSections, guideSectionActions, guideBiblicalReferenceActions } = useGuideSection();
+    const { biblicalReferencesLists: guideBiblicalReferencesLists } = useGuideBiblicalReferencesLists();
+    const { guideSections, guideSectionActions } = useGuideSection();
     const { submitGuide, publishGuide } = useGuideFormData();
-    const biblicalReferences = biblicalReferencesLists.getList('GUIDE');
+    const guideBiblicalReferences = guideBiblicalReferencesLists.getList('GUIDE');
 
     return (
         <div className="min-h-screen bg-background">
@@ -41,11 +51,11 @@ export default function CreateGuidePage() {
               <Separator />
     
               <GuideBiblicalReference
-                biblicalReferences={biblicalReferences}
-                onAddReference={biblicalReferencesLists.add.bind(null, 'GUIDE')}
-                onRemoveReference={biblicalReferencesLists.remove.bind(null, 'GUIDE')}
-                onUpdateReference={biblicalReferencesLists.update.bind(null, 'GUIDE')}
-                addBiblicalReferences={biblicalReferencesLists.batchAdd.bind(null, 'GUIDE')}
+                biblicalReferences={guideBiblicalReferences}
+                onAddReference={guideBiblicalReferencesLists.add.bind(null, 'GUIDE')}
+                onRemoveReference={guideBiblicalReferencesLists.remove.bind(null, 'GUIDE')}
+                onUpdateReference={guideBiblicalReferencesLists.update.bind(null, 'GUIDE')}
+                addBiblicalReferences={guideBiblicalReferencesLists.batchAdd.bind(null, 'GUIDE')}
               />
     
               <Separator />

@@ -1,6 +1,8 @@
-import { createContext, useCallback, useContext, useState } from "react";
-import { GuideSection } from "../components/GuideSections";
-import { BiblicalReference } from "@/features/guide/creation-form/types";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { GuideSection } from "@/features/guide/types";
+import { BiblicalReference } from "@/features/guide/types";
+import { getDraftKey } from "@/features/guide/drafts/utility";
+import { useGetDraft } from "@/features/guide/drafts/hooks/useDraftsApi";
 
 const GuideSectionContext = createContext<GuideSectionContextType | undefined>(undefined);
 
@@ -29,6 +31,19 @@ export function GuideSectionProvider({ children }: { children: React.ReactNode }
         ordinalPosition: 1,
         biblicalReferences: [],
     };
+    const { data: draft, isSuccess } = useGetDraft(getDraftKey('GUIDE'));
+    const hasLoadedInitialDraft = useRef(false);
+
+    useEffect(() => {
+        hasLoadedInitialDraft.current = false;
+    }, []);
+
+    useEffect(() => {
+        if (isSuccess && draft?.draftContent && !hasLoadedInitialDraft.current) {
+            setGuideSections(draft.draftContent.guideSections || [blankSection]);
+            hasLoadedInitialDraft.current = true;
+        }
+    }, [isSuccess, draft]);
 
     const [guideSections, setGuideSections] = useState<GuideSection[]>([blankSection]);
 

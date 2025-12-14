@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { BiblicalReference } from '@/features/guide/creation-form/types';
+import { BiblicalReference } from '@/features/guide/types';
 import { BiblicalReferenceComponent } from './BiblicalReference/BiblicalReferenceComponent';
 
 type GuideBiblicalReferenceProps = {

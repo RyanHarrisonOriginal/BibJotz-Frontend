@@ -10,7 +10,7 @@ import { getPassageColorScheme } from '@/features/bible/utils/passageColorScheme
 import { InlineEditableReference } from '@/features/guide/creation-form/components/BiblicalReference/InlineEditableReference';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { BiblicalReference } from '@/features/guide/creation-form/types';
+import { BiblicalReference } from '@/features/guide/types';
 
 
 type BiblicalReferenceListProps = {
@@ -84,7 +84,7 @@ export function BiblicalReferenceList({
 }: BiblicalReferenceListProps) {
   const { data: books = [] } = useBooks();
 
-  console.log('biblicalReferences:', biblicalReferences);
+  // console.log('biblicalReferences:', biblicalReferences);
 
   const handleBookSelect = (index: number, book: { code: string; name: string }, ref: BiblicalReference) => {
     onUpdateReference(index, 'bookCode', book.code);

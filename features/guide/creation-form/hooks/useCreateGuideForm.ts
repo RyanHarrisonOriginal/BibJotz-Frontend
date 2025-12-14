@@ -1,10 +1,7 @@
 import { useState, useCallback } from 'react';
-import { type GuideSection } from '../components/GuideSections';
-import { type BiblicalReference } from '../components/BiblicalReference/BiblicalReferenceList';
-import { SelectedVerse } from '@/features/bible/types';
-
-// Re-export for convenience
-export type { BiblicalReference } from '../components/BiblicalReference/BiblicalReferenceList';
+import { GuideSection, BiblicalReference } from '@/features/guide/types';
+import { getDraftKey } from '../../drafts/utility';
+import { useGetDraft } from '../../drafts/hooks/useDraftsApi';
 
 export type CreateGuideFormData = {
   name: string;
@@ -19,6 +16,8 @@ export function useCreateGuideForm() {
   const [description, setDescription] = useState('');
   const [isPublic, setIsPublic] = useState(true);
   const [biblicalReferences, setBiblicalReferences] = useState<BiblicalReference[]>([]);
+
+
   const [guideSections, setGuideSections] = useState<GuideSection[]>([
     {
       title: '',
@@ -44,7 +43,7 @@ export function useCreateGuideForm() {
   }, []);
 
   const addBiblicalReferences = useCallback((references: BiblicalReference[]) => {
-    console.log('References:', references.flat());
+    // console.log('References:', references.flat());
     setBiblicalReferences((prev) => [...prev, ...references.flat()]);
   }, []);
 
@@ -147,7 +146,7 @@ export function useCreateGuideForm() {
       biblicalReferences,
       guideSections,
     };
-    console.log('Guide data:', formData);
+    // console.log('Guide data:', formData);
     // TODO: Implement API call to submit guide
   }, [name, description, isPublic, biblicalReferences, guideSections]);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { BiblicalReference } from '@/features/guide/creation-form/types/index';
+import { BiblicalReference } from '@/features/guide/types/index';
 import { BibleReaderModal } from '@/features/bible/components/bible-reader/components/BibleReaderModal';
 import * as React from 'react';
 import { EmptyBiblicalReferenceCard } from '@/features/guide/creation-form/components/BiblicalReference/EmptyBiblicalReferenceCard';

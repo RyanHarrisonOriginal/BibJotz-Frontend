@@ -1,6 +1,6 @@
 'use client';
 
-import { BiblicalReference } from '@/features/guide/creation-form/types';
+import { BiblicalReference } from '@/features/guide/types';
 import GuideSectionCard from './GuideSectionCard';
 import GuideHeader from './GuideHeader';
 

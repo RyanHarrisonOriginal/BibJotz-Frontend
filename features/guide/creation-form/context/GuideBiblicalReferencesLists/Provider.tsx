@@ -1,6 +1,8 @@
 // context/ReferenceListsProvider.tsx
-import { createContext, useContext, useState, useCallback } from "react";
-import { BiblicalReference } from "@/features/guide/creation-form/types";
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
+import { BiblicalReference } from "@/features/guide/types";
+import { useGetDraft } from "@/features/guide/drafts/hooks/useDraftsApi";
+import { getDraftKey } from "@/features/guide/drafts/utility";
 
 type GuideBiblicalReferencesListsStore = Record<string, BiblicalReference[]>;
 
@@ -18,6 +20,35 @@ const GuideBiblicalReferencesListsContext = createContext<GuideBiblicalReference
 
 export function GuideBiblicalReferencesListsProvider({ children }: { children: React.ReactNode }) {
   const [store, setStore] = useState<GuideBiblicalReferencesListsStore>({});
+
+  const { data: draft, isSuccess } = useGetDraft(getDraftKey('GUIDE'));
+
+  const hasLoadedInitialDraft = useRef(false);
+
+  useEffect(() => {
+      hasLoadedInitialDraft.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess && draft?.draftContent && !hasLoadedInitialDraft.current) {
+
+      const sectionReferences = draft.draftContent.guideSections.reduce(
+        (acc, section, index) => {
+          acc[`SECTION_${index}`] = section.biblicalReferences ?? [];
+          return acc;
+        }
+        , {} as Record<string, BiblicalReference[]>
+      )
+
+      setStore((prev) => ({ 
+        ...prev,
+        GUIDE: draft.draftContent.biblicalReferences ?? [],
+        ...sectionReferences
+      } 
+    ));
+      hasLoadedInitialDraft.current = true;
+    }
+  }, [isSuccess, draft]);
 
   const getList = useCallback(
     (key: string) => store[key] ?? [],

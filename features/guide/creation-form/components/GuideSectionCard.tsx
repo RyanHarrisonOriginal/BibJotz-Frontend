@@ -1,12 +1,12 @@
 import { GuideSection } from "./GuideSections";
-import { BiblicalReference } from "@/features/guide/creation-form/types";
+import { BiblicalReference } from "@/features/guide/types";
 import { Card } from "@/components/ui/Card/card";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { BiblicalReferenceComponent } from "./BiblicalReference/BiblicalReferenceComponent";
 import { Plus } from "lucide-react";
-import { useGuideBiblicalReferencesLists } from "../context/GuideBiblicalReferencesListsProvider";
+import { useGuideBiblicalReferencesLists } from "../context/GuideBiblicalReferencesLists/Provider";
 
 type GuideSectionCardProps = {
 
@@ -27,6 +27,7 @@ const GuideSectionCard = ({
 
     const { biblicalReferencesLists } = useGuideBiblicalReferencesLists();
     const sectionBiblicalReferences = biblicalReferencesLists.getList(`SECTION_${sectionIndex}`);
+    // console.log('Section biblical references:', sectionBiblicalReferences);
     const addBiblicalReferencesFromBibleReader = biblicalReferencesLists.batchAdd.bind(null, `SECTION_${sectionIndex}`);
     return (
 
