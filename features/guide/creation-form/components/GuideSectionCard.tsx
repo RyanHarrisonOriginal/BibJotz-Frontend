@@ -25,10 +25,10 @@ const GuideSectionCard = ({
     onRemoveSection
   }: GuideSectionCardProps) => {
 
-    const { biblicalReferencesLists } = useGuideBiblicalReferencesLists();
-    const sectionBiblicalReferences = biblicalReferencesLists.getList(`SECTION_${sectionIndex}`);
+    const { getList: getBiblicalReferences, add: addBiblicalReference, remove: removeBiblicalReference, update: updateBiblicalReference, batchAdd: batchAddBiblicalReferences, reset: resetBiblicalReferences, applySnapshot: applyBiblicalReferencesSnapshot } = useGuideBiblicalReferencesLists();
+    const sectionBiblicalReferences = getBiblicalReferences(`SECTION_${sectionIndex}`);
     // console.log('Section biblical references:', sectionBiblicalReferences);
-    const addBiblicalReferencesFromBibleReader = biblicalReferencesLists.batchAdd.bind(null, `SECTION_${sectionIndex}`);
+    const addBiblicalReferencesFromBibleReader = batchAddBiblicalReferences.bind(null, `SECTION_${sectionIndex}`);
     return (
 
       <Card key={sectionIndex} className="p-6 hover:border-primary/50 transition-colors">
@@ -71,7 +71,7 @@ const GuideSectionCard = ({
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() => biblicalReferencesLists.add.bind(null, `SECTION_${sectionIndex}`)}
+                      onClick={() => addBiblicalReference.bind(null, `SECTION_${sectionIndex}`)}
                     >
                       <Plus className="h-3 w-3" />
                     </Button>
@@ -81,9 +81,9 @@ const GuideSectionCard = ({
                     headerText="Biblical Foundation"
                     descriptionText="Primary scripture references for this section"
                     biblicalReferences={sectionBiblicalReferences}
-                    onAddReference={biblicalReferencesLists.add.bind(null, `SECTION_${sectionIndex}`)}
-                    onRemoveReference={biblicalReferencesLists.remove.bind(null, `SECTION_${sectionIndex}`)}
-                    onUpdateReference={biblicalReferencesLists.update.bind(null, `SECTION_${sectionIndex}`)}
+                    onAddReference={addBiblicalReference.bind(null, `SECTION_${sectionIndex}`)}
+                    onRemoveReference={removeBiblicalReference.bind(null, `SECTION_${sectionIndex}`)}
+                    onUpdateReference={updateBiblicalReference.bind(null, `SECTION_${sectionIndex}`)}
                     addBiblicalReferencesFromBibleReader={addBiblicalReferencesFromBibleReader}
                     actionButtonText={`Add Reference to ${section.title || 'this section'}`}
                   />

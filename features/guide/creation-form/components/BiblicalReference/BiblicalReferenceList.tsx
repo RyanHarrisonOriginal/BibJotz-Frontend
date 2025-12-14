@@ -84,7 +84,7 @@ export function BiblicalReferenceList({
 }: BiblicalReferenceListProps) {
   const { data: books = [] } = useBooks();
 
-  // console.log('biblicalReferences:', biblicalReferences);
+  //console.log('biblicalReferences:', biblicalReferences);
 
   const handleBookSelect = (index: number, book: { code: string; name: string }, ref: BiblicalReference) => {
     onUpdateReference(index, 'bookCode', book.code);

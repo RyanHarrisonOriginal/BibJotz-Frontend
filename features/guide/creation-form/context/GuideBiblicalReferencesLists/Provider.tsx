@@ -1,58 +1,34 @@
 // context/ReferenceListsProvider.tsx
-import { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
+import { createContext, useContext, useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { BiblicalReference } from "@/features/guide/types";
-import { useGetDraft } from "@/features/guide/drafts/hooks/useDraftsApi";
-import { getDraftKey } from "@/features/guide/drafts/utility";
 
 type GuideBiblicalReferencesListsStore = Record<string, BiblicalReference[]>;
 
 type GuideBiblicalReferencesListsContextValue = {
-  biblicalReferencesLists: {
+    store: GuideBiblicalReferencesListsStore;
     getList: (key: string) => BiblicalReference[];
     add: (key: string, ref: BiblicalReference) => void;
     remove: (key: string, index: number) => void;
     update: (key: string, index: number, field: keyof BiblicalReference, value: any) => void;
     batchAdd: (key: string, refs: BiblicalReference[]) => void;
-  };
+    reset: () => void;
+    applySnapshot: (snapshot: GuideBiblicalReferencesListsStore) => void;
 };
 
 const GuideBiblicalReferencesListsContext = createContext<GuideBiblicalReferencesListsContextValue | null>(null);
 
 export function GuideBiblicalReferencesListsProvider({ children }: { children: React.ReactNode }) {
   const [store, setStore] = useState<GuideBiblicalReferencesListsStore>({});
-
-  const { data: draft, isSuccess } = useGetDraft(getDraftKey('GUIDE'));
-
-  const hasLoadedInitialDraft = useRef(false);
-
+  const storeRef = useRef(store);
+  
+  // Keep ref in sync with state
   useEffect(() => {
-      hasLoadedInitialDraft.current = false;
-  }, []);
-
-  useEffect(() => {
-    if (isSuccess && draft?.draftContent && !hasLoadedInitialDraft.current) {
-
-      const sectionReferences = draft.draftContent.guideSections.reduce(
-        (acc, section, index) => {
-          acc[`SECTION_${index}`] = section.biblicalReferences ?? [];
-          return acc;
-        }
-        , {} as Record<string, BiblicalReference[]>
-      )
-
-      setStore((prev) => ({ 
-        ...prev,
-        GUIDE: draft.draftContent.biblicalReferences ?? [],
-        ...sectionReferences
-      } 
-    ));
-      hasLoadedInitialDraft.current = true;
-    }
-  }, [isSuccess, draft]);
+    storeRef.current = store;
+  }, [store]);
 
   const getList = useCallback(
     (key: string) => store[key] ?? [],
-    [store]
+    [store] // Use state so components re-render when store changes
   );
 
   const setList = (key: string, updater: (prev: BiblicalReference[]) => BiblicalReference[]) => {
@@ -85,8 +61,34 @@ export function GuideBiblicalReferencesListsProvider({ children }: { children: R
     []
   );
 
+  const reset = useCallback(() => {
+    setStore(prev => {
+      if (Object.keys(prev).length === 0) return prev; // 🔑 NO-OP if already empty
+      return {};
+    });
+  }, []);
+  
+  const applySnapshot = useCallback((snapshot: GuideBiblicalReferencesListsStore) => {
+    setStore(prev => {
+       if (prev === snapshot) return prev;
+      return snapshot;
+    });
+  }, []);
+
+  const value = useMemo(() => ({
+      getList,
+      add,
+      remove,
+      update,
+      batchAdd,
+      store,
+      reset,
+      applySnapshot,
+    }), [getList, add, remove, update, batchAdd, store, reset, applySnapshot]);
+  
+
   return (
-    <GuideBiblicalReferencesListsContext.Provider value={{ biblicalReferencesLists: { getList, add, remove, update, batchAdd } }}>
+    <GuideBiblicalReferencesListsContext.Provider value={value}>
       {children}
     </GuideBiblicalReferencesListsContext.Provider>
   );

@@ -3,10 +3,10 @@ import { useGuideSection } from "../context/GuideSection/Provider"
 import { useGuideBiblicalReferencesLists } from "../context/GuideBiblicalReferencesLists/Provider";
 import { BiblicalReference } from "@/features/guide/types";
 import { GuideSection } from "@/features/guide/types";
-import { useCallback } from "react";
-import { useAutoSaveDraft, useGetDraft } from "../../drafts/hooks/useDraftsApi";
+import { useCallback, useMemo } from "react";
+import { useAutoSaveDraft } from "../../drafts/hooks/useDraftsApi";
 import { useEffect } from "react";
-import { getDraftKey } from "../../drafts/utility";
+import { useGuideBiblicalReferences } from "../context/GuideBiblicalReferences/Provider";
 
 export type GuideFormData = {
     name: string;
@@ -16,34 +16,37 @@ export type GuideFormData = {
     guideSections: GuideSection[];
 };
 
-export function useGuideFormData() {
-    const { name, description, isPublic } = useGuideMetaData();
-    const { biblicalReferencesLists } = useGuideBiblicalReferencesLists();
-    const { guideSections } = useGuideSection();
+export function useGuideFormData(draftKey: string) {
+    const metaData = useGuideMetaData();
+    const { getList: getBiblicalReferences, store } = useGuideBiblicalReferencesLists();
 
+    const sectionsStore = useGuideSection();
 
-
-    const guideFormData: GuideFormData = {
-        name,
-        description,
-        isPublic,
-        biblicalReferences: biblicalReferencesLists.getList('GUIDE'),
-        guideSections: guideSections.map((section, index) => ({
-            ...section,
-            biblicalReferences: biblicalReferencesLists.getList(`SECTION_${index}`)
+    const guideFormData = useMemo<GuideFormData>(() => ({
+        name: metaData.name,
+        description: metaData.description,
+        isPublic: metaData.isPublic,
+        biblicalReferences: getBiblicalReferences('GUIDE'),
+        guideSections: sectionsStore.guideSections.map((section, index) => ({
+          ...section,
+          biblicalReferences: getBiblicalReferences(`SECTION_${index}`)
         })),
-    };
+      }), [
+        metaData.name,
+        metaData.description,
+        metaData.isPublic,
+        sectionsStore.guideSections,
+        store, // Include store so guideFormData updates when biblical references change
+        getBiblicalReferences // Include function dependency (it depends on store)
+      ]);
+      
 
-    // console.log('Guide form data:', guideFormData);
-    // console.log('Biblical references:', biblicalReferencesLists.getList('SECTION_0'));
-    // console.log('Biblical references:', biblicalReferencesLists.getList('SECTION_1'));
 
-
-    const { autoSave, isSaving, error } = useAutoSaveDraft();
+    const { autosave } = useAutoSaveDraft(draftKey);
 
     useEffect(() => {
-        autoSave(guideFormData);
-    }, [guideFormData]);
+        autosave(guideFormData);
+    }, [guideFormData, autosave]);
 
     const submitGuide = useCallback(() => {
         // console.log('Guide data:', guideFormData);
