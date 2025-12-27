@@ -1,4 +1,4 @@
-import { Guide, GuideListItem } from "../types";
+import { Guide, GuideListPayload, GuideListItem } from "../types";
 
 
 export class GuideApiService {
@@ -17,7 +17,7 @@ export class GuideApiService {
         return response.json();
     }
 
-    static async getGuides(): Promise<GuideListItem[]> {
+    static async getGuides(): Promise<GuideListPayload> {
         const response = await fetch(`${this.BASE_URL}/guides`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -26,6 +26,17 @@ export class GuideApiService {
             throw new Error(`Failed to get guides (${response.status})`);
         }
         return response.json();
+    }
+
+    static async deleteGuide(guideId: number): Promise<void> {
+        console.log('Deleting guide:', guideId);
+        const response = await fetch(`${this.BASE_URL}/guides/${guideId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to delete guide (${response.status})`);
+        }
     }
 
 }

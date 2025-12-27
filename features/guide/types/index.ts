@@ -37,3 +37,11 @@ export type BiblicalReference = {
     numberOfJourneys: number;
     numberOfReflections: number;
   }
+
+  export interface GuideListPayload {
+    guides: GuideListItem[];
+    counts: {
+        myGuides: number;
+        communityGuides: number;
+    };
+}

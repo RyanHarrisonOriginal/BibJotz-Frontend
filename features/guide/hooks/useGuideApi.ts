@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { GuideApiService } from "../api";
 import { Guide } from "../types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 export function useGuideApi() {
@@ -18,4 +18,15 @@ export function useGetGuides() {
         queryFn: () => GuideApiService.getGuides(),
     });
     return query;
+}
+
+export function useDeleteGuide() {
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: (guideId: number) => GuideApiService.deleteGuide(guideId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['guides'] });
+        },
+    });
+    return mutation;
 }

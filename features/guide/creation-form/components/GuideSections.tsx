@@ -3,6 +3,7 @@
 import { BiblicalReference } from '@/features/guide/types';
 import GuideSectionCard from './GuideSectionCard';
 import GuideHeader from './GuideHeader';
+import { AddSectionButton } from './AddSectionButton';
 
 export type GuideSection = {
   title: string;
@@ -36,13 +37,15 @@ export function GuideSections({
 
       <div className="space-y-6">
         {guideSections.map((section, sectionIndex) => (
-          <GuideSectionCard
-            key={sectionIndex}
-            section={section}
-            sectionIndex={sectionIndex}
-            onUpdateSection={onUpdateSection}
-            onRemoveSection={onRemoveSection}
-          />
+          <div key={sectionIndex} className="space-y-6">
+            <GuideSectionCard
+              section={section}
+              sectionIndex={sectionIndex}
+              onUpdateSection={onUpdateSection}
+              onRemoveSection={onRemoveSection}
+            />
+            <AddSectionButton onClick={onAddSection} />
+          </div>
         ))}
       </div>
     </div>
