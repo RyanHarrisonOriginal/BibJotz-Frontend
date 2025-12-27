@@ -7,6 +7,7 @@ export type Draft = {
     draftContent: Guide;
     draftKey: string;
     createdAt: Date;
+    publishedAt: Date;
     updatedAt: Date;
 };
 

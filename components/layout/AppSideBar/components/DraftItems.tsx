@@ -25,6 +25,7 @@ const DraftItem = memo(({ draft, onClick }: { draft: Partial<Draft>, onClick: (d
     return prev.draft.draftKey === next.draft.draftKey &&
            prev.draft.name === next.draft.name &&
            prev.draft.updatedAt?.toString() === next.draft.updatedAt?.toString() &&
+           prev.draft.publishedAt?.toString() === next.draft.publishedAt?.toString() &&
            prev.onClick === next.onClick;
   });
   

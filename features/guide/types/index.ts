@@ -23,4 +23,17 @@ export type BiblicalReference = {
     isPublic: boolean;
     biblicalReferences: BiblicalReference[];
     guideSections: GuideSection[];
+    authorId?: number;
+    ordinalPosition?: number;
   };
+
+  export type GuideListItem = {
+    id: number;
+    name: string;
+    description: string;
+    isPublic: boolean;
+    authorName: string;
+    numberOfSections: number;
+    numberOfJourneys: number;
+    numberOfReflections: number;
+  }

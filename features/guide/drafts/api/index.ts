@@ -6,16 +6,16 @@ export class DraftApiService {
   
     static async saveDraft(userId: number, draftContent: Guide, draftKey: string): Promise<Draft> {
       console.log('Saving draft', draftKey);
-      const response = await fetch(`${this.BASE_URL}/drafts`, {
+      const res = await fetch(`${this.BASE_URL}/drafts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, draftContent, draftKey, name: draftContent.name }),
       });
   
-      if (!response.ok) {
-        throw new Error(`Failed to save draft (${response.status})`);
+      if (!res.ok) {
+        throw new Error(`Failed to save draft (${res.status})`);
       }
-      return response.json();
+      return res.json();
     }
 
     static async getDraft(draftKey: string) {
@@ -26,6 +26,17 @@ export class DraftApiService {
       });
       if (!res.ok) throw new Error('Failed to load draft');
       return res.json();
+    }
+
+    static async publishDraft(draftKey: string): Promise<void> {
+      const response = await fetch(`${this.BASE_URL}/drafts/${encodeURIComponent(draftKey)}/publish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(`Failed to publish draft (${response.status}): ${errorText}`);
+      }
     }
     
 

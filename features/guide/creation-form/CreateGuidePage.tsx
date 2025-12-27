@@ -24,25 +24,35 @@ export default function CreateGuidePage() {
     return <EntityNotFound entityType="Guide" message="No draft key specified" />;
   }
 
-
   const { 
-    name, description, isPublic, 
-    setIsPublic, reset: resetMetaData, applySnapshot: applyMetaDataSnapshot, 
-    updateName, updateDescription 
+    name, 
+    description, 
+    isPublic, 
+    setIsPublic, 
+    reset: resetMetaData, 
+    applySnapshot: applyMetaDataSnapshot, 
+    updateName, 
+    updateDescription 
   } = useGuideMetaData();
 
   const { 
-    getList: getBiblicalReferences, add: addBiblicalReference, 
-    remove: removeBiblicalReference, update: updateBiblicalReference, 
-    batchAdd: batchAddBiblicalReferences, reset: resetBiblicalReferences, 
+    getList: getBiblicalReferences, 
+    add: addBiblicalReference, 
+    remove: removeBiblicalReference, 
+    update: updateBiblicalReference, 
+    batchAdd: batchAddBiblicalReferences, 
+    reset: resetBiblicalReferences, 
     applySnapshot: applyBiblicalReferencesSnapshot 
   } = useGuideBiblicalReferencesLists();
   
-  const { guideSections, guideSectionActions, 
-    reset: resetSections, applySnapshot: applySectionsSnapshot 
+  const { 
+    guideSections, 
+    guideSectionActions, 
+    reset: resetSections, 
+    applySnapshot: applySectionsSnapshot 
   } = useGuideSection();
 
-  const { submitGuide, publishGuide } = useGuideFormData(draftKey);
+  const { submitGuide, publishGuide, validationErrors } = useGuideFormData(draftKey);
 
   const guideBiblicalReferences = getBiblicalReferences('GUIDE');
 
@@ -86,6 +96,7 @@ export default function CreateGuidePage() {
             description={description}
             updateName={updateName}
             updateDescription={updateDescription}
+            errors={validationErrors}
           />
 
           <Separator />
