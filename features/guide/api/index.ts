@@ -1,4 +1,4 @@
-import { Guide, GuideListPayload, GuideListItem } from "../types";
+import { Guide, GuideListPayload, GuideListItem, GuideOptionsListPayload } from "../types";
 
 
 export class GuideApiService {
@@ -24,6 +24,17 @@ export class GuideApiService {
         });
         if (!response.ok) {
             throw new Error(`Failed to get guides (${response.status})`);
+        }
+        return response.json();
+    }
+
+    static async getGuideOptions(): Promise<GuideOptionsListPayload> {
+        const response = await fetch(`${this.BASE_URL}/guides/options`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to get guide options (${response.status})`);
         }
         return response.json();
     }

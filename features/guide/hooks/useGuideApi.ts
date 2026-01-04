@@ -20,6 +20,14 @@ export function useGetGuides() {
     return query;
 }
 
+export function useGetGuideOptions() {
+    const query = useQuery({
+        queryKey: ['guideOptions'],
+        queryFn: () => GuideApiService.getGuideOptions(),
+    });
+    return query;
+}
+
 export function useDeleteGuide() {
     const queryClient = useQueryClient();
     const mutation = useMutation({

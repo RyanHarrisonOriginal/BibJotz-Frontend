@@ -45,3 +45,16 @@ export type BiblicalReference = {
         communityGuides: number;
     };
 }
+
+
+export interface GuideOption {
+  id: number;
+  name: string;
+  description: string;
+  guideId: number;
+  currentVersionId: number;
+}
+
+export interface GuideOptionsListPayload {
+  guides: GuideOption[];
+}
