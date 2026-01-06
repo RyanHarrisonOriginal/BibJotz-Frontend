@@ -1,5 +1,5 @@
 'use client';
-import GuideListPage from '@/features/guide/guide-list/GuideListPage';
+import GuideListPage from '@/screens/GuideListScreen';
 
 const Guides = () => {
   return <GuideListPage />

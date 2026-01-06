@@ -6,8 +6,8 @@ import { Plus, Sparkles, BookOpen, ArrowRight, FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/Progress/progress";
-import { createNewDraftKey } from "@/features/guide/drafts/utility";
-import { handleCreateGuide } from "@/features/guide/drafts/utility";
+import { createNewDraftKey } from "@/domain/guide-draft/utility";
+import { handleCreateGuide } from "@/domain/guide-draft/utility";
 
 export default function Home() {
   const router = useRouter();

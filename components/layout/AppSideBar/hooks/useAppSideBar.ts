@@ -1,11 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useSideBar } from "@/components/ui/SideBar/sidebarProvider";
-import { useGetUserDrafts } from "@/features/guide/drafts/hooks/useDraftsApi";
+import { useGetUserDrafts } from "@/domain/guide-draft/hooks/useDraftsApi";
 import { useMemo, useEffect, useCallback } from "react";
-import { createNewDraftKey } from "@/features/guide/drafts/utility";
-import { Draft } from "@/features/guide/drafts/types";
+import { createNewDraftKey } from "@/domain/guide-draft/utility";
+import { Draft } from "@/domain/guide-draft/types";
 import { useRouter } from "next/navigation";
-import { DraftApiService } from "@/features/guide/drafts/api";
+import { DraftApiService } from "@/domain/guide-draft/api";
 
 export const useAppSideBar = () => {
     const router = useRouter();

@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Draft } from "@/features/guide/drafts/types";
+import { Draft } from "@/domain/guide-draft/types";
 import { FileText } from "lucide-react";
 import { getRelativeTime } from "../Utility";
 

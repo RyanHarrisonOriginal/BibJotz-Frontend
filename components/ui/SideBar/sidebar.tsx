@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/public/lib/utils"
 import { useSideBar } from "@/components/ui/SideBar/sidebarProvider"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 

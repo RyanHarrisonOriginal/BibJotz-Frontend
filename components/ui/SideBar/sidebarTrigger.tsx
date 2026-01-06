@@ -1,5 +1,5 @@
 'use client'
-import { cn } from "@/lib/utils"
+import { cn } from "@/public/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useSideBar } from "@/components/ui/SideBar/sidebarProvider"
 import { PanelLeft } from "lucide-react"

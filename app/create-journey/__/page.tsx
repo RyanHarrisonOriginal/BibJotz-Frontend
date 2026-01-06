@@ -6,10 +6,10 @@ import { Input } from '@/components/ui/Form/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select/select';
 import { ArrowLeft, BookOpen, CheckCircle2, Sparkles, PenLine } from 'lucide-react';
 import { toast } from 'sonner';
-import SectionNav from '@/features/journeys/components/SectionNav';
-import ReflectionEditor from '@/features/reflections/components/ReflectionEditor';
+import SectionNav from '@/domain/journeys/components/SectionNav';
+import ReflectionEditor from '@/domain/reflections/components/ReflectionEditor';
 import { Badge } from '@/components/ui/badge';
-import { useGetGuideOptions } from '@/features/guide/hooks/useGuideApi';
+import { useGetGuideOptions } from '@/domain/guide/hooks/useGuideApi';
 
 interface Guide {
   id: string;

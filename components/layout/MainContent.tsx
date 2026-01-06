@@ -1,7 +1,7 @@
 'use client'
 
 import { useSideBar } from "@/components/ui/SideBar/sidebarProvider"
-import { cn } from "@/lib/utils"
+import { cn } from "@/public/lib/utils"
 
 interface MainContentProps {
   children: React.ReactNode

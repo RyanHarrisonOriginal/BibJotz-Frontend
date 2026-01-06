@@ -1,7 +1,7 @@
 'use client';
 
-import { CreateGuideProvider } from '@/features/guide/creation-form/context/GuideForm/Provider';
-import CreateGuidePage from '../../features/guide/creation-form/CreateGuidePage';
+import { CreateGuideProvider } from '@/domain/guide/context/GuideForm/Provider';
+import CreateGuidePage from '@/screens/CreateGuideScreen';
 
 export default function CreateGuide() {
 

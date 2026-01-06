@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/public/lib/utils";
 
 interface NavLinkProps extends React.ComponentProps<typeof Link> {
   activeClassName?: string;
