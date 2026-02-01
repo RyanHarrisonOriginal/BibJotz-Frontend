@@ -7,12 +7,16 @@ import { GuidePreviewCard } from "@/domain/guide/components/GuideCard/GuidePrevi
 import { NoGuidesFound } from "@/domain/guide/components/GuideCard/NoGuidesFound";
 import { useGetGuides } from "@/domain/guide/hooks/useGuideApi";
 import { GuideListItem } from "@/domain/guide/types";
+import { useJourneyApi } from "@/domain/journeys/hooks/useJourneyApi";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
+const DEFAULT_USER_ID = 1;
 
 export const CreateJourneyScreen = () => {
     const router = useRouter();
     const { data: guides } = useGetGuides();
+    const { mutations } = useJourneyApi();
     const [selectedGuide, setSelectedGuide] = useState<GuideListItem | null>(null);
     const [journeyName, setJourneyName] = useState('');
 
@@ -24,7 +28,12 @@ export const CreateJourneyScreen = () => {
     };
 
     const handleStartJourney = () => {
-        console.log('Start Journey');
+        if (!selectedGuide) return;
+        mutations.createJourney.mutate({
+            guideId: selectedGuide.id,
+            name: journeyName.trim(),
+            userId: DEFAULT_USER_ID,
+        });
     };
 
     const isFormValid = Boolean(selectedGuide && journeyName.trim().length > 0);

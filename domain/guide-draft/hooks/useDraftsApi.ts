@@ -1,108 +1,47 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DraftApiService } from "../api";
-import { Guide } from "../../guide/types";
-import { useCallback, useEffect, useRef } from "react";
-import { getDraftKey } from "../utility";
-import { useDebouncedCallback } from "use-debounce";
-import { Draft } from "../types";
-import { useRouter } from "next/navigation";
+/**
+ * Guide-draft API: single entry point for all draft operations (mutations + queries).
+ *
+ * Project standard: each domain has one entry-point API hook that exposes all
+ * mutations and queries. Prefer useDraftsApi({ draftKey, userId }) and use
+ * .mutations and .queries; individual hooks are re-exported for backward compatibility.
+ */
 
-type SaveGuideDraftParams = {
-  userId: number;
-  payload: Guide;
-  draftKey: string;
+import {
+  useAutoSaveDraft,
+  usePublishDraftMutation,
+} from "./mutations";
+import { useGetDraft, useGetUserDrafts } from "./queries";
+
+export type UseDraftsApiOptions = {
+  draftKey?: string | null;
+  userId?: number;
 };
 
+const DEFAULT_USER_ID = 0;
 
-export const useAutoSaveDraft = (draftKey: string | null) => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: ({ userId, payload, draftKey }: { userId: number; payload: Guide; draftKey: string }) =>
-      DraftApiService.saveDraft(userId, payload, draftKey),
-    onSuccess: (savedDraft) => {
-      queryClient.setQueryData(['userDrafts', 1], (old: Partial<Draft>[] = []) => {
-        const draftIndex = old.findIndex(d => d.draftKey === savedDraft.draftKey);
-        if (draftIndex === -1) return old;
-        const existingDraft = old[draftIndex];
-        const nameChanged = existingDraft.name !== savedDraft.name;
-        const updatedAtChanged = existingDraft.updatedAt?.toString() !== savedDraft.updatedAt?.toString();
-        if (!nameChanged && !updatedAtChanged) {
-          return old;
-        }
-        const updated = [...old];
-        updated[draftIndex] = {
-          ...existingDraft,
-          name: savedDraft.name,
-          updatedAt: savedDraft.updatedAt,
-        };
+export function useDraftsApi(options: UseDraftsApiOptions = {}) {
+  const { draftKey = null, userId = DEFAULT_USER_ID } = options;
+  const effectiveDraftKey = draftKey ?? null;
+  const effectiveUserId = userId ?? DEFAULT_USER_ID;
 
-        return updated;
-      });
+  const { autosave } = useAutoSaveDraft(effectiveDraftKey);
+  const publishDraftMutation = usePublishDraftMutation(effectiveDraftKey ?? "");
+  const draftQuery = useGetDraft(effectiveDraftKey ?? "");
+  const userDraftsQuery = useGetUserDrafts(effectiveUserId);
+
+  return {
+    mutations: {
+      autosave,
+      publishDraft: publishDraftMutation,
     },
-  });
-  const autosave = useDebouncedCallback(
-    (payload: Guide) => {
-      if (!draftKey) return;
-      mutation.mutate({ userId: 1, payload, draftKey });
+    queries: {
+      draft: draftQuery,
+      userDrafts: userDraftsQuery,
     },
-    1000,
-    { maxWait: 2000 }
-  );
-  useEffect(() => {
-    autosave.cancel();
-    mutation.reset();
-  }, [draftKey]);
+  };
+}
 
-  return { autosave };
-};
+// --- Backward compatibility: re-export individual hooks ---
 
-export const usePublishDraft = (draftKey: string) => {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const mutation = useMutation({
-    mutationFn: () => {
-      console.log('Publishing draft:', draftKey);
-      return DraftApiService.publishDraft(draftKey);
-    },
-    onSuccess: () => {
-      console.log('Draft published successfully:', draftKey);
-      queryClient.setQueryData(['userDrafts', 1], (old: Partial<Draft>[] = []) => {
-        const filtered = old.filter(d => d.draftKey !== draftKey);
-        if (filtered.length === old.length) {
-          return old;
-        }
-        return filtered;
-      });
-      router.push('/guides');
-    },
-    onError: (error) => {
-      console.error('Failed to publish draft:', error);
-    },
-  });
-  return mutation;
-};
-
-export const useGetDraft = (draftKey: string) =>
-  useQuery({
-    queryKey: ['draft', draftKey],
-    queryFn: () => DraftApiService.getDraft(draftKey),
-    enabled: !!draftKey,
-    staleTime: 0,
-    refetchOnMount: 'always',     // 🔑
-    refetchOnWindowFocus: false,
-  });
-
-
-export const useGetUserDrafts = (userId: number) => {
-  const query = useQuery({
-    queryKey: ['userDrafts', userId],
-    queryFn: () => DraftApiService.getUserDrafts(userId),
-    staleTime: 0, // Always consider data stale
-    gcTime: 0, // Don't cache data
-    refetchOnMount: 'always', // Always refetch when component mounts
-    refetchOnWindowFocus: true, // Refetch when window regains focus
-    refetchOnReconnect: true, // Refetch when network reconnects
-    // React Query uses structural sharing by default - it will only update if data reference changes
-  });
-  return query;
-};
+export { useAutoSaveDraft, usePublishDraftMutation as usePublishDraft } from "./mutations";
+export { useGetDraft, useGetUserDrafts } from "./queries";

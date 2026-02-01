@@ -28,7 +28,7 @@ export function useGuideFormData(draftKey: string) {
     const { getList: getBiblicalReferences, store } = useGuideBiblicalReferencesLists();
     const { mutate: publishGuideMutation } = usePublishDraft(draftKey);
     const router = useRouter();
-    
+
     const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
     const sectionsStore = useGuideSection();
@@ -48,7 +48,7 @@ export function useGuideFormData(draftKey: string) {
         biblicalReferences: getBiblicalReferences('GUIDE'),
         guideSections: mapGuideSections(sectionsStore.guideSections),
         authorId: 1,
-      }), [
+    }), [
         metaData.name,
         metaData.description,
         metaData.isPublic,
@@ -56,8 +56,8 @@ export function useGuideFormData(draftKey: string) {
         store, // Include store so guideFormData updates when biblical references change
         getBiblicalReferences, // Include function dependency (it depends on store)
         mapGuideSections
-      ]);
-      
+    ]);
+
 
 
     const { autosave } = useAutoSaveDraft(draftKey);
@@ -73,15 +73,15 @@ export function useGuideFormData(draftKey: string) {
 
     const validateForm = useCallback((data: GuideFormData): ValidationErrors => {
         const errors: ValidationErrors = {};
-        
+
         if (!data.name || data.name.trim() === '') {
             errors.name = 'Name is required';
         }
-        
+
         if (!data.description || data.description.trim() === '') {
             errors.description = 'Description is required';
         }
-        
+
         return errors;
     }, []);
 

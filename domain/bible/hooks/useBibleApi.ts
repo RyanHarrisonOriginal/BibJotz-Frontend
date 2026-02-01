@@ -1,57 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
-import { BibleApiService, TranslationApiService } from '@/domain/bible/api';
+/**
+ * Bible API: single entry point for all bible operations (queries only).
+ *
+ * Project standard: each domain has one entry-point API hook. For bible, each
+ * query takes different params (bookName, chapterNumber, etc.), so consumers
+ * typically use the re-exported hooks directly with their params. This file
+ * re-exports all query hooks for backward compatibility.
+ */
 
-// Hooks
-export function useBooks(enabled: boolean = true, translation: string = '') {
-  return useQuery({
-    queryKey: ['books', translation],
-    queryFn: () => BibleApiService.fetchBooks(translation),
-    enabled: enabled && !!translation,
-  });
-}
-
-export function useBookChapterInfo(bookName: string, chapterNumber: number) {
-  return useQuery({
-    queryKey: ['bookChapterInfo', bookName, chapterNumber],
-    queryFn: () => BibleApiService.fetchBookChapterInfo(bookName, chapterNumber),
-    enabled: !!bookName && !!chapterNumber,
-  });
-}
-
-export function useBookInfo(bookName: string) {
-  return useQuery({
-    queryKey: ['bookInfo', bookName],
-    queryFn: () => BibleApiService.fetchBookInfo(bookName),
-    enabled: !!bookName,
-  });
-}
-
-export function useVerses(bookName: string, chapterNumber: number) {
-  return useQuery({
-    queryKey: ['verses', bookName, chapterNumber],
-    queryFn: () => BibleApiService.fetchVerses(bookName, chapterNumber),
-    enabled: !!bookName && !!chapterNumber,
-  });
-}
-
-export function useVerseText(
-  bookName: string,
-  chapterNumber: number,
-  start: number|undefined = undefined,
-  end: number|undefined = undefined,
-  translation: string|undefined = undefined
-) {
-  return useQuery({
-    queryKey: ['verseText', bookName, chapterNumber, start, end, translation],
-    queryFn: () =>
-      BibleApiService.fetchVerseText(bookName, chapterNumber, translation, start, end),
-    enabled: !!bookName && !!chapterNumber,
-  });
-}
-
-export function useBibleVersions() {
-  return useQuery({
-    queryKey: ['bibleVersions'],
-      queryFn: () => TranslationApiService.fetchBibleTranslations(),
-    });
-  }
+export {
+  useBooks,
+  useBookChapterInfo,
+  useBookInfo,
+  useVerses,
+  useVerseText,
+  useBibleVersions,
+} from "./queries";

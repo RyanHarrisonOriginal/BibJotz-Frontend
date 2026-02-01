@@ -1,40 +1,33 @@
-import { useCallback } from "react";
-import { GuideApiService } from "../api";
-import { Guide } from "../types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+/**
+ * Guide API: single entry point for all guide operations (mutations + queries).
+ *
+ * Project standard: each domain has one entry-point API hook that exposes all
+ * mutations and queries. Prefer useGuideApi() and use .mutations and .queries.
+ */
 
+import { usePublishGuideMutation, useDeleteGuideMutation } from "./mutations";
+import { useGetGuides, useGetGuideOptions } from "./queries";
 
 export function useGuideApi() {
-   const mutation = useMutation({
-    mutationFn: (guide: Guide) => GuideApiService.publishGuide(guide),
-   });
+  const publishGuideMutation = usePublishGuideMutation();
+  const deleteGuideMutation = useDeleteGuideMutation();
+  const guidesQuery = useGetGuides();
+  const guideOptionsQuery = useGetGuideOptions();
 
-   return mutation;
+  return {
+    mutations: {
+      publishGuide: publishGuideMutation,
+      deleteGuide: deleteGuideMutation,
+    },
+    queries: {
+      guides: guidesQuery,
+      guideOptions: guideOptionsQuery,
+    },
+  };
 }
 
-export function useGetGuides() {
-    const query = useQuery({
-        queryKey: ['guides'],
-        queryFn: () => GuideApiService.getGuides(),
-    });
-    return query;
-}
+// --- Backward compatibility: re-export individual hooks ---
 
-export function useGetGuideOptions() {
-    const query = useQuery({
-        queryKey: ['guideOptions'],
-        queryFn: () => GuideApiService.getGuideOptions(),
-    });
-    return query;
-}
-
-export function useDeleteGuide() {
-    const queryClient = useQueryClient();
-    const mutation = useMutation({
-        mutationFn: (guideId: number) => GuideApiService.deleteGuide(guideId),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['guides'] });
-        },
-    });
-    return mutation;
-}
+export { usePublishGuideMutation, useDeleteGuideMutation } from "./mutations";
+export { useGetGuides, useGetGuideOptions } from "./queries";
+export { useDeleteGuideMutation as useDeleteGuide } from "./mutations";
