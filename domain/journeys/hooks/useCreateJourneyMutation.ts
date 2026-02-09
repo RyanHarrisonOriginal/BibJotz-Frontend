@@ -12,9 +12,11 @@ export function useCreateJourneyMutation() {
   return useMutation({
     mutationFn: (payload: CreateJourneyPayload) =>
       JourneyApiService.createJourney(payload),
-    onSuccess: (_data: Journey) => {
+    onSuccess: (_data: Journey, variables: CreateJourneyPayload) => {
       queryClient.invalidateQueries({ queryKey: JOURNEYS_QUERY_KEY });
-      router.push("/guides");
+      router.push(
+        `/reflections/create?guideId=${variables.guideId}&journeyName=${encodeURIComponent(variables.name)}`
+      );
     },
     onError: (error) => {
       console.error("Failed to create journey:", error);

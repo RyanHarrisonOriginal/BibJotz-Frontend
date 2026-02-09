@@ -2,6 +2,8 @@
 
 This document describes how we structure and expose hooks in each domain. Following these patterns keeps domains consistent, testable, and easy to navigate.
 
+For how screens and domain components are structured, see [screens-and-components-guidelines.md](screens-and-components-guidelines.md).
+
 ---
 
 ## 1. One entry-point API hook per domain

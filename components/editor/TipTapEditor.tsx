@@ -14,6 +14,7 @@ interface TiptapEditorProps {
 
 const TiptapEditor = ({ content, onChange, placeholder = 'Start writing...', className }: TiptapEditorProps) => {
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: {

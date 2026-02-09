@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Class-based dark mode for next-themes (adds .dark on html) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     /* Parchment White Background */
@@ -171,4 +174,289 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
+}
+
+/* TipTap Editor / ProseMirror base styles (from POC) */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground) / 0.4);
+  pointer-events: none;
+  height: 0;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ProseMirror h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.ProseMirror p {
+  margin-bottom: 0.75rem;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.ProseMirror li {
+  margin-bottom: 0.25rem;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid hsl(var(--primary));
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0.75rem;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+.ProseMirror strong {
+  font-weight: 600;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+/* Entry editor (inline reflection) */
+.prose-entry .ProseMirror {
+  min-height: 60px;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: hsl(var(--foreground));
+}
+
+.prose-entry .ProseMirror p {
+  margin-bottom: 0.5em;
+}
+
+.prose-entry .ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+.prose-entry .ProseMirror ul,
+.prose-entry .ProseMirror ol {
+  padding-left: 1.25rem;
+  margin: 0.5em 0;
+}
+
+.prose-entry .ProseMirror blockquote {
+  border-left: 2px solid hsl(var(--primary) / 0.3);
+  padding-left: 1rem;
+  margin: 0.75em 0;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+.prose-entry .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground) / 0.5);
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+.entry-editor-content {
+  outline: none;
+}
+
+/* Logged reflection (persisted journal entry view) */
+.prose-logged {
+  font-size: 0.9375rem;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+}
+
+.prose-logged p {
+  margin-bottom: 0.75em;
+  text-indent: 0;
+}
+
+.prose-logged p:last-child {
+  margin-bottom: 0;
+}
+
+.prose-logged p:first-child::first-letter {
+  font-size: 1.4em;
+  font-weight: 500;
+  color: hsl(var(--primary) / 0.8);
+  line-height: 1;
+}
+
+.prose-logged ul,
+.prose-logged ol {
+  padding-left: 1.25rem;
+  margin: 0.75em 0;
+}
+
+.prose-logged ul {
+  list-style-type: disc;
+}
+
+.prose-logged ol {
+  list-style-type: decimal;
+}
+
+.prose-logged li {
+  margin-bottom: 0.25em;
+}
+
+.prose-logged li::marker {
+  color: hsl(var(--primary) / 0.4);
+}
+
+.prose-logged blockquote {
+  position: relative;
+  border-left: none;
+  padding-left: 1.5rem;
+  margin: 1em 0;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+.prose-logged blockquote::before {
+  content: '"';
+  position: absolute;
+  left: 0;
+  top: -0.25em;
+  font-size: 2.5rem;
+  font-family: Georgia, serif;
+  color: hsl(var(--primary) / 0.25);
+  line-height: 1;
+}
+
+.prose-logged strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.prose-logged em {
+  font-style: italic;
+  color: hsl(var(--foreground) / 0.9);
+}
+
+/* Section editor (longer-form sections) */
+.prose-section .ProseMirror {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: hsl(var(--foreground));
+  min-height: 120px;
+}
+
+.prose-section .ProseMirror p {
+  margin-bottom: 1rem;
+}
+
+.prose-section .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground) / 0.4);
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+.prose-section .ProseMirror h2 {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: hsl(var(--foreground));
+}
+
+.prose-section .ProseMirror h3 {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: hsl(var(--foreground) / 0.9);
+}
+
+.prose-section .ProseMirror blockquote {
+  border-left: 2px solid hsl(var(--secondary));
+  padding-left: 1rem;
+  margin: 1.25rem 0;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+.prose-section .ProseMirror ul,
+.prose-section .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin: 0.75rem 0;
+}
+
+.prose-section .ProseMirror ul {
+  list-style-type: disc;
+}
+
+.prose-section .ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.prose-section .ProseMirror li {
+  margin-bottom: 0.375rem;
+}
+
+.prose-section .ProseMirror li::marker {
+  color: hsl(var(--primary) / 0.5);
+}
+
+/* Collapsible animations (Radix CollapsibleContent) */
+@keyframes collapsible-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.animate-collapsible-down {
+  animation: collapsible-down 0.25s ease-out;
+}
+
+.animate-collapsible-up {
+  animation: collapsible-up 0.2s ease-out;
 }

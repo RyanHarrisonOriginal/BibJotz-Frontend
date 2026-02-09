@@ -1,0 +1,12 @@
+---
+description: Screens are thin orchestrators; page UI is built from domain components. See docs for full guidelines.
+alwaysApply: true
+---
+
+# Screens and components
+
+- **Screens** own route-level state, data hooks, page-level logic (e.g. filtering), and navigation. They compose the page from domain components and stay thin; avoid large inline JSX for page sections.
+- **Domain components** live under `domain/[domain]/components/`. They receive data and callbacks via props and handle presentational structure and local behavior. Export them via a barrel (`index.ts`).
+- **Naming:** Screens in `screens/[Feature]Screen.tsx`; domain components named by purpose (e.g. `LibraryPageHeader`, `LibraryJourneyCard`).
+
+Full guidelines: [docs/screens-and-components-guidelines.md](docs/screens-and-components-guidelines.md). Reference: `screens/LibraryScreen.tsx`, `screens/GuideListScreen.tsx`, `domain/library/components/`.

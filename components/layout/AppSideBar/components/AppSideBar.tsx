@@ -41,8 +41,8 @@ export const AppSideBar = () => {
             <SideBarMenu>
               {[
                 { label: "Home", href: "/", icon: Home },
-                { label: "Guides", href: "/guides", icon: BookOpen },
-                { label: "Library", href: "/library", icon: Library },
+                { label: "Guide Catalog", href: "/guides", icon: BookOpen },
+                { label: "Journey Library", href: "/library", icon: Library },
                 { label: "Profile", href: "/profile", icon: User }
               ].map(({ label, href, icon: Icon }) => (
                 <SideBarMenuItem key={href}>

@@ -1,0 +1,10 @@
+---
+description: Production vs POC project context — frontend is production; bibjotz-moc-up-main is POC; port from POC using production standards.
+alwaysApply: true
+---
+
+# Project context
+
+- **Production app**: This workspace (`frontend`) is the production app that ships.
+- **POC**: The separate project **bibjotz-moc-up-main** is the vibe-coded POC/mock-up used for experimentation.
+- **Workflow**: New content and ideas are built in the POC, then **ported into this production app** following the standards and patterns in place here (and any new standards added to the production codebase).

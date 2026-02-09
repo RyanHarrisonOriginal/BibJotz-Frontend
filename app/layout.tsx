@@ -4,6 +4,7 @@ import { Inter, Lora } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { SidebarProvider } from "@/components/ui/SideBar/sidebarProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { ConditionalLayout } from "@/components/layout/ConditionalLayout";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 const inter = Inter({
@@ -27,18 +28,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <QueryProvider>
-        <SidebarProvider>
-          <html lang="en" className={`${inter.variable} ${lora.variable}`}>
-            <body>
-              <ConditionalLayout>
-                {children}
-              </ConditionalLayout>
-            </body>
-          </html>
-        </SidebarProvider>
-      </QueryProvider>
-    </ClerkProvider>
+    <html lang="en" className={`${inter.variable} ${lora.variable}`} suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ClerkProvider>
+            <QueryProvider>
+              <SidebarProvider>
+                <ConditionalLayout>
+                  {children}
+                </ConditionalLayout>
+              </SidebarProvider>
+            </QueryProvider>
+          </ClerkProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

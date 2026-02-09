@@ -147,7 +147,7 @@ export default function Home() {
               <BookOpen className="h-5 w-5 text-muted-foreground" />
             </div>
             <div className="text-left">
-              <p className="font-medium text-foreground">Explore Guides</p>
+              <p className="font-medium text-foreground">Explore Guide Catalog</p>
               <p className="text-xs text-muted-foreground">Browse community guides</p>
             </div>
           </Button>

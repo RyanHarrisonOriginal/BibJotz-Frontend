@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { Compass } from "lucide-react"
-import SideBarTrigger from "@/components/ui/SideBar/sidebarTrigger"
-import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs"
+import { Compass } from "lucide-react";
+import SideBarTrigger from "@/components/ui/SideBar/sidebarTrigger";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 
 export const AppHeader = () => {
     const { user } = useUser();
@@ -20,7 +21,8 @@ export const AppHeader = () => {
             </div>
             
             {/* User Info Section */}
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
+                <ThemeToggle />
                 <SignedIn>
                     <div className="flex items-center gap-3">
                         <span className="text-sm font-medium text-foreground">
