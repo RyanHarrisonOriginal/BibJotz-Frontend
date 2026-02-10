@@ -22,3 +22,6 @@ export type LibraryJourney = {
   sections: LibraryJourneySection[];
   reflections: LibraryReflection[];
 };
+
+/** Single journey with sections and reflections (e.g. for editor fetch). Same shape as one library item. */
+export type JourneyDetail = LibraryJourney;

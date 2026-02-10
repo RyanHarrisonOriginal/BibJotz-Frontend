@@ -5,7 +5,7 @@
  * library write endpoints exist.
  */
 
-import { useGetLibraryJourneys } from "./queries";
+import { useGetLibraryJourneys, useGetJourneyDetail } from "./queries";
 
 export function useLibraryApi() {
   const libraryJourneysQuery = useGetLibraryJourneys();
@@ -17,4 +17,4 @@ export function useLibraryApi() {
   };
 }
 
-export { useGetLibraryJourneys } from "./queries";
+export { useGetLibraryJourneys, useGetJourneyDetail } from "./queries";

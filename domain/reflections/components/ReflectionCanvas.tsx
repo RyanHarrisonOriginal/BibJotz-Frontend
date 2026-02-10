@@ -8,7 +8,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/Collapsible/collapsible";
-import ReflectionEntry, { Entry } from "./ReflectionEntry";
+import { ReflectionEntry, type Entry } from "./ReflectionEntry";
 import { Button } from "@/components/ui/button";
 
 interface Section {
@@ -16,13 +16,15 @@ interface Section {
   title: string;
 }
 
-interface SectionEntries {
+export interface SectionEntries {
   [sectionId: string]: Entry[];
 }
 
 interface ReflectionCanvasProps {
   sections: Section[];
   onContentChange: (content: string) => void;
+  /** When opening an existing journey, prefill sections with these entries. */
+  initialSectionEntries?: SectionEntries;
 }
 
 const SectionBlock = ({
@@ -139,10 +141,11 @@ const SectionBlock = ({
   );
 };
 
-const ReflectionCanvas = ({
+export function ReflectionCanvas({
   sections,
   onContentChange,
-}: ReflectionCanvasProps) => {
+  initialSectionEntries,
+}: ReflectionCanvasProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(() =>
     new Set(sections.length > 0 ? [sections[0].id] : [])
   );
@@ -150,7 +153,10 @@ const ReflectionCanvas = ({
   const [sectionEntries, setSectionEntries] = useState<SectionEntries>(() => {
     const initial: SectionEntries = {};
     sections.forEach((s) => {
-      initial[s.id] = [];
+      initial[s.id] =
+        initialSectionEntries && Array.isArray(initialSectionEntries[s.id])
+          ? initialSectionEntries[s.id]
+          : [];
     });
     return initial;
   });
@@ -296,6 +302,4 @@ const ReflectionCanvas = ({
       </div>
     </div>
   );
-};
-
-export default ReflectionCanvas;
+}

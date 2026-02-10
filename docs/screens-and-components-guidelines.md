@@ -18,7 +18,8 @@ Screens own **route-level state**, **data hooks**, **page-level logic** (e.g. fi
 export default function LibraryScreen() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const { data: journeysData = [] } = useGetLibraryJourneys();
+  const { queries } = useLibraryApi();
+  const { data: journeysData = [] } = queries.libraryJourneys;
   const filteredJourneys = useMemo(() => { /* filter by searchTerm */ }, [journeysData, searchTerm]);
 
   return (
@@ -66,7 +67,20 @@ Screens import from the barrel: `import { LibraryPageHeader, LibraryActionsBar, 
 
 ---
 
-## 3. What screens own
+## 3. Domain vs main components folder
+
+**Domain-specific components** must live in **`domain/[domain]/components/`**. Any UI that belongs to a single domain (e.g. reflection editor entry, reflection canvas, library journey card) goes in that domain’s components folder.
+
+**Only cross-domain (shared) components** belong in the main **`components/`** folder. Examples:
+- **`components/ui/`** – shared primitives (buttons, inputs, dialogs, etc.) used by many domains.
+- **`components/layout/`** – app shell, header, sidebar, navigation.
+- Other shared pieces used by more than one domain (e.g. a shared Bible reader panel used by reflections and another feature).
+
+When adding a new component, ask: “Is this used by one domain only?” If yes, put it in `domain/[domain]/components/`. If it’s shared across domains or is a generic UI primitive, put it in `components/`.
+
+---
+
+## 4. What screens own
 
 Screens are responsible for:
 
@@ -80,7 +94,7 @@ Screens are responsible for:
 
 ---
 
-## 4. What domain components own
+## 5. What domain components own
 
 Domain components are responsible for:
 
@@ -105,7 +119,7 @@ export function LibraryJourneyCard({ journey, onOpen }: LibraryJourneyCardProps)
 
 ---
 
-## 5. Naming and location
+## 6. Naming and location
 
 - **Screens:** `screens/[Feature]Screen.tsx` (e.g. `LibraryScreen.tsx`, `GuideListScreen.tsx`). One screen per major route or feature page.
 - **Domain components:** `domain/[domain]/components/[Purpose][Domain]Or[Feature].tsx` (e.g. `LibraryPageHeader.tsx`, `LibraryJourneyCard.tsx`, `LibraryEmptyState.tsx`). Name by purpose so the screen’s JSX is self-explanatory.
@@ -114,7 +128,7 @@ export function LibraryJourneyCard({ journey, onOpen }: LibraryJourneyCardProps)
 
 ---
 
-## 6. Summary checklist
+## 7. Summary checklist
 
 For each new or refactored screen:
 

@@ -4,3 +4,7 @@ export { ReflectionEditorHeader } from "./ReflectionEditorHeader";
 export { ReflectionEditorNoData } from "./ReflectionEditorNoData";
 export { ReflectionEditorLoading } from "./ReflectionEditorLoading";
 export { ReflectionEditorBody } from "./ReflectionEditorBody";
+export { ReflectionCanvas } from "./ReflectionCanvas";
+export type { SectionEntries } from "./ReflectionCanvas";
+export { ReflectionEntry } from "./ReflectionEntry";
+export type { Entry } from "./ReflectionEntry";

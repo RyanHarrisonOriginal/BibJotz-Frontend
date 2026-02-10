@@ -4,6 +4,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useGetGuides } from "@/domain/guide/hooks/useGuideApi";
+import { useGetJourneyDetail } from "@/domain/library/hooks/useLibraryApi";
+import { mapJourneyDetailToSectionEntries } from "@/domain/reflections/utils/mappers";
 import {
   sectionsFromGuide,
   ReflectionEditorHeader,
@@ -15,28 +17,43 @@ import {
 export function ReflectionEditorScreen() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const journeyId = searchParams.get("journeyId");
+  const guideId = searchParams.get("guideId") ?? "";
+  const journeyNameParam = searchParams.get("journeyName") ?? "";
+
+  const { data: journeyDetail, isLoading: journeyLoading } =
+    useGetJourneyDetail(journeyId);
   const { data: guidesPayload, isLoading: guidesLoading } = useGetGuides();
   const guides = guidesPayload?.guides ?? [];
-
-  const guideId = searchParams.get("guideId") ?? "";
-  const journeyName = searchParams.get("journeyName") ?? "";
 
   const guide = useMemo(
     () => guides.find((g) => String(g.id) === guideId),
     [guides, guideId]
   );
-  const sections = useMemo(
-    () => (guide ? sectionsFromGuide(guide) : []),
-    [guide]
+
+  const sections = useMemo(() => {
+    if (journeyDetail) return journeyDetail.sections;
+    if (guide) return sectionsFromGuide(guide);
+    return [];
+  }, [journeyDetail, guide]);
+
+  const guideTitle = journeyDetail?.guideTitle ?? guide?.name ?? "";
+  const journeyName = journeyDetail?.title ?? journeyNameParam;
+
+  const initialSectionEntries = useMemo(
+    () => (journeyDetail ? mapJourneyDetailToSectionEntries(journeyDetail) : undefined),
+    [journeyDetail]
   );
-  const guideTitle = guide?.name ?? "";
 
   const [bibleReaderOpen, setBibleReaderOpen] = useState(false);
   const [documentContent, setDocumentContent] = useState("");
 
-  const hasParams = Boolean(guideId && journeyName);
-  const hasValidState = Boolean(hasParams && guide);
-  const stillLoading = hasParams && guidesLoading;
+  const isJourneyPath = Boolean(journeyId);
+  const isGuidePath = Boolean(guideId && journeyNameParam);
+  const stillLoading =
+    (isJourneyPath && journeyLoading) || (isGuidePath && guidesLoading);
+  const hasValidState =
+    (isJourneyPath && journeyDetail) || (isGuidePath && guide);
 
   if (stillLoading) {
     return <ReflectionEditorLoading />;
@@ -83,6 +100,7 @@ export function ReflectionEditorScreen() {
         onContentChange={setDocumentContent}
         bibleReaderOpen={bibleReaderOpen}
         onCloseBibleReader={() => setBibleReaderOpen(false)}
+        initialSectionEntries={initialSectionEntries}
       />
     </div>
   );

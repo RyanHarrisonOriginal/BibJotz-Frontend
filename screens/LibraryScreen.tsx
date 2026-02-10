@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGetLibraryJourneys } from "@/domain/library/hooks/useLibraryApi";
+import { useLibraryApi } from "@/domain/library/hooks/useLibraryApi";
 import type { LibraryJourney } from "@/domain/library/types";
 import {
   LibraryPageHeader,
@@ -15,7 +15,9 @@ export default function LibraryScreen() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: journeysData = [] } = useGetLibraryJourneys();
+  const { queries } = useLibraryApi();
+  const rawData = queries.libraryJourneys.data;
+  const journeysData = Array.isArray(rawData) ? rawData : [];
 
   const filteredJourneys = useMemo(() => {
     if (!searchTerm) return journeysData;
@@ -43,9 +45,13 @@ export default function LibraryScreen() {
     0
   );
 
-  const openJourney = (_journey: LibraryJourney) => {
-    router.push("/create-journey");
-    // TODO: pass journey context when journey editor supports it
+  const openJourney = (journey: LibraryJourney) => {
+    const params = new URLSearchParams({
+      journeyId: journey.id,
+      journeyName: journey.title,
+      guideTitle: journey.guideTitle,
+    });
+    router.push(`/reflections/create?${params.toString()}`);
   };
 
   return (
