@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft, BookOpen, CheckCircle2, Sparkles, PenLine } from 'lucide-react';
 import { toast } from 'sonner';
 import SectionNav from '@/domain/journeys/components/SectionNav';
-import ReflectionEditor from '@/domain/reflections/components/ReflectionEditor';
+import { ReflectionEditor } from "@/domain/reflections/components";
 import { Badge } from '@/components/ui/badge';
 import { useGetGuideOptions } from '@/domain/guide/hooks/useGuideApi';
 

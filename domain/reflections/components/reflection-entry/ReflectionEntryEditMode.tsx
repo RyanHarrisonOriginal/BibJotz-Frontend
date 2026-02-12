@@ -4,7 +4,7 @@ import { EditorContent } from "@tiptap/react";
 import { Calendar, Clock, Feather } from "lucide-react";
 import { cn } from "@/public/lib/utils";
 import { ReflectionEntryFormattingToolbar } from "./ReflectionEntryFormattingToolbar";
-import type { Editor } from "@tiptap/react";
+import type { Editor } from "@tiptap/core";
 
 export interface ReflectionEntryEditModeProps {
   editor: Editor | null;

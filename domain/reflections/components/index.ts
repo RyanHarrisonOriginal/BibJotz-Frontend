@@ -1,10 +1,16 @@
 export { GuideSectionSelect, sectionsFromGuide } from "./GuideSectionSelect";
 export type { SectionOption } from "./GuideSectionSelect";
-export { ReflectionEditorHeader } from "./ReflectionEditorHeader";
-export { ReflectionEditorNoData } from "./ReflectionEditorNoData";
-export { ReflectionEditorLoading } from "./ReflectionEditorLoading";
-export { ReflectionEditorBody } from "./ReflectionEditorBody";
-export { ReflectionCanvas } from "./ReflectionCanvas";
-export type { SectionEntries } from "./ReflectionCanvas";
-export { ReflectionEntry } from "./ReflectionEntry";
-export type { Entry } from "./ReflectionEntry";
+
+export {
+  ReflectionEditorHeader,
+  ReflectionEditorNoData,
+  ReflectionEditorLoading,
+  ReflectionEditorBody,
+  ReflectionEditor,
+} from "./reflection-editor";
+
+export { ReflectionCanvas } from "./reflection-canvas";
+export type { SectionEntries, Section } from "./reflection-canvas";
+
+export { ReflectionEntry } from "./reflection-entry";
+export type { Entry } from "./reflection-entry";

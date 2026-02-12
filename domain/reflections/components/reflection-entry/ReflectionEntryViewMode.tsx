@@ -4,7 +4,7 @@ import { EditorContent } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import { BookMarked, Feather, Trash2 } from "lucide-react";
 import { cn } from "@/public/lib/utils";
-import type { Editor } from "@tiptap/react";
+import type { Editor } from "@tiptap/core";
 
 export interface ReflectionEntryViewModeProps {
   editor: Editor | null;

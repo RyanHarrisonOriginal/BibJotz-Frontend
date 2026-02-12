@@ -5,6 +5,7 @@
 
 export type LibraryReflection = {
   id: string;
+  entry_key: string;
   content: string;
   sectionTitle: string;
   createdAt: string;

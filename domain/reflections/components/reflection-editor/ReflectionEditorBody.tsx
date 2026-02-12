@@ -2,11 +2,8 @@
 
 import { cn } from "@/public/lib/utils";
 import BibleReaderPanel from "@/components/journey/BibleReaderPanel";
-import {
-  ReflectionCanvas,
-  type SectionEntries,
-} from "./ReflectionCanvas";
-import type { SectionOption } from "./GuideSectionSelect";
+import { ReflectionCanvas, type SectionEntries } from "../reflection-canvas";
+import type { SectionOption } from "../GuideSectionSelect";
 
 interface ReflectionEditorBodyProps {
   sections: SectionOption[];
@@ -15,6 +12,8 @@ interface ReflectionEditorBodyProps {
   onCloseBibleReader: () => void;
   /** Prefill canvas when opening an existing journey. */
   initialSectionEntries?: SectionEntries;
+  /** When set, reflections are debounced and saved via saveReflection API. */
+  journeyId?: string | null;
 }
 
 export function ReflectionEditorBody({
@@ -23,6 +22,7 @@ export function ReflectionEditorBody({
   bibleReaderOpen,
   onCloseBibleReader,
   initialSectionEntries,
+  journeyId = null,
 }: ReflectionEditorBodyProps) {
   return (
     <div className="flex-1 flex overflow-hidden">
@@ -31,6 +31,7 @@ export function ReflectionEditorBody({
           sections={sections}
           onContentChange={onContentChange}
           initialSectionEntries={initialSectionEntries}
+          journeyId={journeyId}
         />
       </div>
 

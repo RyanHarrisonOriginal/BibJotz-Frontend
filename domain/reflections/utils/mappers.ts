@@ -1,5 +1,5 @@
-import type { Entry } from "../components/ReflectionEntry";
-import type { SectionEntries } from "../components/ReflectionCanvas";
+import type { Entry } from "../components/reflection-entry";
+import type { SectionEntries } from "../components/reflection-canvas";
 import type { JourneyDetail } from "@/domain/library/types";
 
 function parseCreatedAt(createdAt: string): Date {
@@ -12,7 +12,7 @@ function parseCreatedAt(createdAt: string): Date {
 
 /**
  * Maps a journey detail (sections + reflections) to initial section entries
- * for the reflection canvas. Groups reflections by section title.
+ * for the reflection canvas. Groups reflections by section title; uses entry_key as entry id.
  */
 export function mapJourneyDetailToSectionEntries(
   journey: JourneyDetail
@@ -22,7 +22,7 @@ export function mapJourneyDetailToSectionEntries(
     const entries: Entry[] = journey.reflections
       .filter((r) => r.sectionTitle === section.title)
       .map((r) => ({
-        id: r.id,
+        id: r.entry_key ?? r.id,
         content: r.content,
         createdAt: parseCreatedAt(r.createdAt),
       }));

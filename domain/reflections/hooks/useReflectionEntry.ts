@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useEditor } from "@tiptap/react";
+import type { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import type { Entry } from "../components/ReflectionEntry";
+import type { Entry } from "../components/reflection-entry";
 import { formatEntryDates, type EntryFormattedDates } from "../utils/formatDate";
 
 const EDITOR_PLACEHOLDER =
@@ -21,7 +22,7 @@ export interface UseReflectionEntryParams {
 
 export interface UseReflectionEntryReturn {
   /** TipTap editor instance. May be null before first paint. */
-  editor: ReturnType<typeof useEditor>;
+  editor: Editor | null;
   /** True when the user is in edit mode (editing or empty new entry). */
   isEditing: boolean;
   /** True when the entry has any text content. */
@@ -91,11 +92,11 @@ export function useReflectionEntry({
     setHasContent(text.length > 0);
   }, [editor, entry.content]);
 
-  // Keep editor editable when in edit mode or when empty; read-only in view mode.
+  // Reflection entry is always editable on this screen.
   useEffect(() => {
     if (!editor) return;
-    editor.setEditable(isEditing || !hasContent);
-  }, [editor, isEditing, hasContent]);
+    editor.setEditable(true);
+  }, [editor]);
 
   const wordCount = useMemo(() => {
     const raw = (entry.content ?? "").replace(/<[^>]*>/g, " ");

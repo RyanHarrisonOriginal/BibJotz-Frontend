@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Bold, Italic, List, Quote, Trash2 } from "lucide-react";
 import { cn } from "@/public/lib/utils";
-import type { Editor } from "@tiptap/react";
+import type { Editor } from "@tiptap/core";
 
 export interface ReflectionEntryFormattingToolbarProps {
   editor: Editor | null;

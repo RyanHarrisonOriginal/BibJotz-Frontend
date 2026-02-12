@@ -101,6 +101,7 @@ export function ReflectionEditorScreen() {
         bibleReaderOpen={bibleReaderOpen}
         onCloseBibleReader={() => setBibleReaderOpen(false)}
         initialSectionEntries={initialSectionEntries}
+        journeyId={journeyId}
       />
     </div>
   );

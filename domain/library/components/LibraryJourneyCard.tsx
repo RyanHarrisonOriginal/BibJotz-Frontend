@@ -60,9 +60,12 @@ export function LibraryJourneyCard({ journey, onOpen }: LibraryJourneyCardProps)
                   {reflection.createdAt}
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {reflection.content}
-              </p>
+              <div
+                className="library-reflection-preview text-sm text-muted-foreground line-clamp-2 [&_p]:my-0 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0"
+                dangerouslySetInnerHTML={{
+                  __html: reflection.content || "",
+                }}
+              />
             </button>
           ))}
 

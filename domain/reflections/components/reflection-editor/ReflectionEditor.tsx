@@ -1,7 +1,7 @@
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { BookOpen, X } from 'lucide-react';
-import TiptapEditor from '@/components/editor/TipTapEditor';
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { BookOpen, X } from "lucide-react";
+import TiptapEditor from "@/components/editor/TipTapEditor";
 
 interface ReflectionEditorProps {
   title: string;
@@ -17,7 +17,7 @@ interface ReflectionEditorProps {
   onRemoveTag: (tag: string) => void;
 }
 
-const ReflectionEditor = ({
+export default function ReflectionEditor({
   title,
   content,
   tags,
@@ -29,12 +29,11 @@ const ReflectionEditor = ({
   onTagInputChange,
   onAddTag,
   onRemoveTag,
-}: ReflectionEditorProps) => {
+}: ReflectionEditorProps) {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="py-8 px-8 lg:px-16 xl:px-24">
         <div className="space-y-6 max-w-4xl">
-          {/* Context badges */}
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="font-normal">
               <BookOpen className="h-3 w-3 mr-1" />
@@ -46,7 +45,6 @@ const ReflectionEditor = ({
             </Badge>
           </div>
 
-          {/* Title */}
           <input
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
@@ -54,7 +52,6 @@ const ReflectionEditor = ({
             className="w-full border-0 bg-transparent text-4xl font-bold font-serif outline-none placeholder:text-muted-foreground/40 focus:outline-none"
           />
 
-          {/* TipTap Editor */}
           <TiptapEditor
             content={content}
             onChange={onContentChange}
@@ -63,7 +60,6 @@ const ReflectionEditor = ({
 
           <Separator />
 
-          {/* Tags */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-muted-foreground">
               <span className="text-sm font-medium">Tags</span>
@@ -89,7 +85,7 @@ const ReflectionEditor = ({
                 value={tagInput}
                 onChange={(e) => onTagInputChange(e.target.value)}
                 onKeyDown={onAddTag}
-                placeholder={tags.length === 0 ? 'Add tags...' : '+'}
+                placeholder={tags.length === 0 ? "Add tags..." : "+"}
                 className="border-0 bg-transparent text-sm outline-none placeholder:text-muted-foreground/40 focus:outline-none min-w-[80px] flex-1"
               />
             </div>
@@ -98,6 +94,4 @@ const ReflectionEditor = ({
       </div>
     </div>
   );
-};
-
-export default ReflectionEditor;
+}
