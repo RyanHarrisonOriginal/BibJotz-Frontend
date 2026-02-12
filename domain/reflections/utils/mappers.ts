@@ -11,21 +11,23 @@ function parseCreatedAt(createdAt: string): Date {
 }
 
 /**
- * Maps a journey detail (sections + reflections) to initial section entries
- * for the reflection canvas. Groups reflections by section title; uses entry_key as entry id.
+ * Maps a journey detail (sections + sectionReflections) to initial section entries
+ * for the reflection canvas. Uses sectionReflections grouped by section; entry id = entry_key.
  */
 export function mapJourneyDetailToSectionEntries(
   journey: JourneyDetail
 ): SectionEntries {
   const result: SectionEntries = {};
+  const sectionReflections = journey.sectionReflections ?? [];
   for (const section of journey.sections) {
-    const entries: Entry[] = journey.reflections
-      .filter((r) => r.sectionTitle === section.title)
-      .map((r) => ({
-        id: r.entry_key ?? r.id,
-        content: r.content,
-        createdAt: parseCreatedAt(r.createdAt),
-      }));
+    const sr = sectionReflections.find(
+      (s) => String(s.sectionId) === String(section.id)
+    );
+    const entries: Entry[] = (sr?.entries ?? []).map((e) => ({
+      id: e.entry_key ?? e.id,
+      content: e.content,
+      createdAt: parseCreatedAt(e.createdAt),
+    }));
     result[section.id] = entries;
   }
   return result;

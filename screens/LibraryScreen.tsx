@@ -23,25 +23,51 @@ export default function LibraryScreen() {
     if (!searchTerm) return journeysData;
 
     const term = searchTerm.toLowerCase();
-    return journeysData
-      .map((journey) => ({
-        ...journey,
-        reflections: journey.reflections.filter(
-          (r) =>
-            r.content.toLowerCase().includes(term) ||
-            r.sectionTitle.toLowerCase().includes(term)
-        ),
-      }))
-      .filter(
-        (journey) =>
-          journey.title.toLowerCase().includes(term) ||
-          journey.guideTitle.toLowerCase().includes(term) ||
-          journey.reflections.length > 0
-      );
+    return journeysData.filter((journey) => {
+      const titleMatch =
+        journey.title.toLowerCase().includes(term) ||
+        journey.guideTitle.toLowerCase().includes(term);
+      if (titleMatch) return true;
+
+      const sectionReflections = journey.sectionReflections ?? [];
+      const matchingSectionReflections = sectionReflections
+        .map((sr) => ({
+          ...sr,
+          entries: sr.entries.filter(
+            (e) =>
+              e.content.toLowerCase().includes(term) ||
+              sr.sectionTitle.toLowerCase().includes(term)
+          ),
+        }))
+        .filter((sr) => sr.entries.length > 0);
+      return matchingSectionReflections.length > 0;
+    }).map((journey) => {
+      if (!searchTerm) return journey;
+      const term = searchTerm.toLowerCase();
+      const titleMatch =
+        journey.title.toLowerCase().includes(term) ||
+        journey.guideTitle.toLowerCase().includes(term);
+      if (titleMatch) return journey;
+
+      const sectionReflections = journey.sectionReflections ?? [];
+      const filteredSectionReflections = sectionReflections
+        .map((sr) => ({
+          ...sr,
+          entries: sr.entries.filter(
+            (e) =>
+              e.content.toLowerCase().includes(term) ||
+              sr.sectionTitle.toLowerCase().includes(term)
+          ),
+        }))
+        .filter((sr) => sr.entries.length > 0);
+      return { ...journey, sectionReflections: filteredSectionReflections };
+    });
   }, [journeysData, searchTerm]);
 
   const totalReflections = journeysData.reduce(
-    (acc, j) => acc + j.reflections.length,
+    (acc, j) =>
+      acc +
+      (j.sectionReflections ?? []).reduce((s, sr) => s + sr.entries.length, 0),
     0
   );
 

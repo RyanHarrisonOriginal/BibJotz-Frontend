@@ -1,14 +1,19 @@
 /**
  * Library types: shape returned by the library API (user's journeys with reflections).
- * API is assumed to return this shape when wired.
+ * Reflections are grouped by section.
  */
 
-export type LibraryReflection = {
+export type LibraryReflectionEntry = {
   id: string;
   entry_key: string;
   content: string;
-  sectionTitle: string;
   createdAt: string;
+};
+
+export type LibrarySectionReflections = {
+  sectionId: string;
+  sectionTitle: string;
+  entries: LibraryReflectionEntry[];
 };
 
 export type LibraryJourneySection = {
@@ -21,7 +26,7 @@ export type LibraryJourney = {
   title: string;
   guideTitle: string;
   sections: LibraryJourneySection[];
-  reflections: LibraryReflection[];
+  sectionReflections: LibrarySectionReflections[];
 };
 
 /** Single journey with sections and reflections (e.g. for editor fetch). Same shape as one library item. */
